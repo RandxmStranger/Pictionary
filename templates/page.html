@@ -1,0 +1,32 @@
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>
+            Online Pictionary
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <link href="/static/style.css" rel="stylesheet">
+    <input id="hex" placeholder="Enter Hex Code"></input>
+    <input id="brush" placeholder="Brush Width" type="number"></input>
+    <input id ="chatinput" placeholder="Message" type="text"></input>
+    <button id="chatsubmit" type="button" onlick="chatsubmit()"></button>
+    <canvas id="draw"></canvas>
+    <p id="title"></p>
+
+    <button id="red" type="button" onclick="red()">Red</button>
+    <button id="green" type="button" onclick="green()">Green</button>
+    <button id="blue" type="button" onclick="blue()">Blue</button>
+    <button id="yellow" type="button" onclick="yellow()">Yellow</button>
+    <button id="orange" type="button" onclick="orange()">Orange</button>
+    <button id="purple" type="button" onclick="purple()">Purple</button>
+    <button id="black" type="button" onclick="black()">Black</button>
+    <button id="gray" type="button" onclick="gray()">Gray</button>
+    <button id="gray2" type="button" onclick="gray2()">Light Gray</button>
+    <button id="white" type="button" onclick="white()">White</button>
+    
+    <button id = "word" type="button" onclick="changeWord()">New Word</button>
+
+    <script src= "/static/app.js"></script>
+</html>
