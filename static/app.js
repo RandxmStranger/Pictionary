@@ -17,12 +17,10 @@ function setPosition(e) {
   pos.y = e.clientY - rect.top;
 }
 
-function chatsubmit(e) {
-  e.preventDefault();
-  if (chatinput.value) {
-    socket.emit('chat message', chatinput.value);
-    document.getElementById("chatinput").value = "";
-}}
+function chatsubmit() {
+  chatinput.value = "";
+  //socket.emit('chat message', chatinput.value);
+}
 
 function draw(e) {
   if (e.buttons !== 1) return;
@@ -48,14 +46,14 @@ async function getWords() {
 }
 
 //function setColor(color) {
-//  const colors = { red: "#FF0000", green: "#00FF00", blue: "#0000FF", black: "#000000", yellow: "#FFFF00" }
+//  const colors = { red: "#FF0000", green: "#00FF00", blue: "#0000FF", black: "#000000", yellow: "#FFFF00" };
 //  if (!colors[color]) return;
 //  hex.value = colors[color];
-//}
+//};
 
 //const buttons = document.querySelectorAll(".colorButton");
 //buttons.forEach(button => {
-//  button.addEventListener("click", () => setColor(button.value))
+//  button.addEventListener("click", () => setColor(button.value));
 //});
 
 function red() {
