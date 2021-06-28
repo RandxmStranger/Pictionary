@@ -46,6 +46,7 @@ function draw(e) {
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
+  
 }
 
 function changeWord() {
