@@ -17,8 +17,8 @@ def handle_drawing(path,color,width):
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
-#    temp = ("message:" + str(message))
     print((("message:" + str(message))), file=sys.stdout, flush=True)
+    socketio.emit('chatprint', message)
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)

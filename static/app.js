@@ -23,8 +23,16 @@ function chatsubmit() {
   console.log("message")
 }
 
-socket.on( 'connect', function() {
+socket.on( 'connect', function(){
   console.log("connected")
+})
+
+socket.on( 'chatprint', function( message){
+  console.log("incoming message");
+  var node = document.createElement("LI");      
+  var textnode = document.createTextNode(message);
+  node.appendChild(textnode);
+  document.getElementById("chat").appendChild(node);
 })
 
 function draw(e) {

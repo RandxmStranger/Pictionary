@@ -104,15 +104,25 @@ body {
     position: fixed;
     margin-left: auto;
     margin-top: auto;
-    right: 30;
+    right: 70;
     bottom: 15;
-    width: 220;
+    width: 180;
+}
+#chat {
+    display: block;
+    position: fixed;
+    right: 20;
+    bottom: 25;
+    width: 190;
+    height: 600;
+    list-style: none;
+    background-color: white;
 }
 #chatsubmit {
     position: fixed;
-    right:10;
+    right:20;
     bottom: 15;
-    background-color: #FFF;
+    background-color: white;
     color: black;
 }
 .colorButton {
