@@ -113,10 +113,11 @@ body {
     position: fixed;
     right: 20;
     bottom: 25;
-    width: 190;
+    width: 225;
     height: 600;
     list-style: none;
     background-color: white;
+    padding-left: 5;
 }
 #chatsubmit {
     position: fixed;
@@ -124,6 +125,15 @@ body {
     bottom: 15;
     background-color: white;
     color: black;
+}
+#username {
+    display: block;
+    position: fixed;
+    margin-left: auto;
+    margin-top: auto;
+    right: 70;
+    bottom: 645;
+    width: 180;
 }
 .colorButton {
     position: fixed;
