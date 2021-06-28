@@ -1,5 +1,5 @@
 const canvas = document.getElementById("draw");
-
+const io = require('socket.io')(80)
 const ctx = canvas.getContext("2d");
 let word = "Something";
 ctx.canvas.width = 1000;
@@ -18,8 +18,8 @@ function setPosition(e) {
 }
 
 function chatsubmit() {
-  chatinput.value = "";
-  //socket.emit('chat message', chatinput.value);
+  io.emit('chatsubmit', chatinput.value);
+  chatinput.value='';
 }
 
 function draw(e) {

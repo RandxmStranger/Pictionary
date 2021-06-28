@@ -1,9 +1,10 @@
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO
+import sys
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret!'
+app.config['SECRET_KEY'] = 'fortnite'
 socketio = SocketIO(app)
 
 @app.route("/")
@@ -16,8 +17,8 @@ def handle_drawing(path,color,width):
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
-    print(("message: ", str(message)))
+#    temp = ("message:" + str(message))
+    print((("message:" + str(message))), file=sys.stdout, flush=True)
 
 if __name__ == "__main__":
-    socketio.run(app)
-
+    socketio.run(app, debug = True)
