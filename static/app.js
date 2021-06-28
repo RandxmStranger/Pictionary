@@ -1,5 +1,5 @@
 const canvas = document.getElementById("draw");
-const io = require('socket.io')(80)
+var socket = io.connect('http://' + document.domain + ':' + location.port);
 const ctx = canvas.getContext("2d");
 let word = "Something";
 ctx.canvas.width = 1000;
@@ -18,9 +18,14 @@ function setPosition(e) {
 }
 
 function chatsubmit() {
-  io.emit('chatsubmit', chatinput.value);
+  socket.emit('chatsubmit', chatinput.value);
   chatinput.value='';
+  console.log("message")
 }
+
+socket.on( 'connect', function() {
+  console.log("connected")
+})
 
 function draw(e) {
   if (e.buttons !== 1) return;
