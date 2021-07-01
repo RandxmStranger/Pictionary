@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import sys
@@ -13,7 +12,7 @@ def connect():
 
 @socketio.on('drawing')
 def handle_drawing(path,color,width):
-    print("received path", path, color, width)
+    print("received drawing", path, color, width)
 
 @socketio.on('chatsubmit')
 def handle_chat(message):

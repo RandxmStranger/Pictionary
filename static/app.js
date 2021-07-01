@@ -3,13 +3,12 @@ var socket = io.connect('http://' + document.domain + ':' + location.port);
 const ctx = canvas.getContext("2d");
 let word = "Something";
 ctx.canvas.width = 1000;
-ctx.canvas.height = 700;
+ctx.canvas.height = 680;
 document.getElementById("title").innerHTML = ("Draw: " + word);
 const hex = document.getElementById("hex");
 const chatinput = document.getElementById("chatinput");
 
 var pos = { x: 0, y: 0 };
-
 
 function setPosition(e) {
   var rect = canvas.getBoundingClientRect();
@@ -35,6 +34,18 @@ socket.on( 'chatprint', function( message){
   document.getElementById("chat").appendChild(node);
 })
 
+socket.on( 'drawreceive', function(path,color,width){
+  console.log("Incoming drawing")
+  ctx.beginPath();
+  ctx.lineWidth = width;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = color;
+  ctx.moveTo(pos.x, pos.y);
+  setPosition(e);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+})
+
 function draw(e) {
   if (e.buttons !== 1) return;
   var color = document.getElementById("hex").value;
@@ -46,7 +57,6 @@ function draw(e) {
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-  
 }
 
 function changeWord() {
