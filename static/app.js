@@ -34,15 +34,14 @@ socket.on( 'chatprint', function( message){
   document.getElementById("chat").appendChild(node);
 })
 
-socket.on( 'drawreceive', function(path,color,width){
+socket.on( 'drawreceive', function(args){
   console.log("Incoming drawing")
   ctx.beginPath();
-  ctx.lineWidth = width;
+  ctx.lineWidth = args[5];
   ctx.lineCap = "round";
-  ctx.strokeStyle = color;
-  ctx.moveTo(pos.x, pos.y);
-  setPosition(e);
-  ctx.lineTo(pos.x, pos.y);
+  ctx.strokeStyle = args[4];
+  ctx.moveTo(args[0], args[1]);
+  ctx.lineTo(args[2], args[3]);
   ctx.stroke();
 })
 
@@ -50,13 +49,20 @@ function draw(e) {
   if (e.buttons !== 1) return;
   var color = document.getElementById("hex").value;
   ctx.beginPath();
-  ctx.lineWidth = document.getElementById("brush").value;
+  var width = document.getElementById("brush").value;
+  ctx.lineWidth = width;
   ctx.lineCap = "round";
   ctx.strokeStyle = color;
   ctx.moveTo(pos.x, pos.y);
+  let pos1x = pos.x
+  let pos1y = pos.y
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
+  let pos2x = pos.x
+  let pos2y = pos.y
   ctx.stroke();
+  var args = [pos1x, pos1y, pos2x, pos2y ,color, width]
+  socket.emit('drawing',args)
 }
 
 function changeWord() {

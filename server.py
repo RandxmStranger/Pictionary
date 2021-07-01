@@ -11,8 +11,9 @@ def connect():
     return render_template("page.html")
 
 @socketio.on('drawing')
-def handle_drawing(path,color,width):
-    print("received drawing", path, color, width)
+def handle_drawing(args):
+    print("received drawing", args)
+    socketio.emit('drawreceive', args)
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
