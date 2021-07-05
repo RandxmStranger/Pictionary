@@ -24,6 +24,7 @@ function chatsubmit() {
 
 socket.on( 'connect', function(){
   console.log("connected")
+  socket.emit('createid')
 })
 
 socket.on( 'chatprint', function( message){
@@ -32,6 +33,11 @@ socket.on( 'chatprint', function( message){
   var textnode = document.createTextNode(message);
   node.appendChild(textnode);
   document.getElementById("chat").appendChild(node);
+})
+
+socket.on( 'receiveid', function( id){
+  const clientid = id
+  return clientid
 })
 
 socket.on( 'drawreceive', function(args){
