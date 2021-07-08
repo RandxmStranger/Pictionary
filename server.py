@@ -8,7 +8,15 @@ socketio = SocketIO(app)
 
 @app.route("/")
 def connect():
-    return render_template("page.html")
+    return render_template("spectate.html")
+
+@app.route("/draw")
+def drawconnect():
+    return render_template("draw.html")
+
+@app.route("/spectate")
+def spectateconnect():
+    return render_template("spectate.html")
 
 @socketio.on('drawing')
 def handle_drawing(args):

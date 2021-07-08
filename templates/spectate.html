@@ -1,0 +1,27 @@
+<html lang="en">
+    <head>
+        <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <meta charset="utf-8">
+        <title>
+            Online Pictionary
+        </title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <link href="/static/spectatestyle.css" rel="stylesheet">
+    <input id ="chatinput" placeholder="Message" type="text"></input>
+    <input id = "username" placeholder="Username" type="text"></input>
+    <canvas id="draw"></canvas>
+    <p id="title"></p>
+    
+    <ul id="chat">
+        <li>Chat Messages Will Appear Here</li>
+    </ul>
+
+    <button id="namesubmit" type="button" onclick="namesubmit()">Save</button>
+    <button id="chatsubmit" type="button" onclick="chatsubmit()">Send</button>
+    
+    <button id = "word" type="button" onclick="changeWord()">New Word</button>
+
+    <script src= "/static/spectateapp.js"></script>
+</html>

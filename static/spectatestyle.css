@@ -1,0 +1,61 @@
+body {
+    background-color: grey;
+}
+#draw {
+    display:block;
+    background-color: white;
+    width: 1000px;
+    height: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50;
+}
+#title {
+    display: block;
+    position: fixed;
+    margin-left: 650;
+    margin-top: -720;
+    font-family: "Comic Sans MS Bold" , "Comic Sans", cursive;
+    font-size: 21;
+    font-weight: bolder;
+    background-color: white;
+}
+#chatinput {
+    display: block;
+    position: fixed;
+    margin-left: auto;
+    margin-top: auto;
+    right: 70;
+    bottom: 15;
+    width: 180;
+}
+#chat {
+    display: block;
+    position: fixed;
+    right: 20;
+    bottom: 25;
+    width: 225;
+    height: 600;
+    list-style: none;
+    background-color: white;
+    padding-left: 5;
+}
+#chatsubmit {
+    position: fixed;
+    right:20;
+    bottom: 15;
+    background-color: white;
+    color: black;
+}
+#username {
+    display: block;
+    position: fixed;
+    margin-left: auto;
+    margin-top: auto;
+    right: 70;
+    bottom: 645;
+    width: 180;
+}
+.colorButton {
+    position: fixed;
+  }
