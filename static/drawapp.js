@@ -2,7 +2,7 @@ const canvas = document.getElementById("drawcanvas");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 var lastmove = 0
 const ctx = canvas.getContext("2d");
-let word = "Something";
+const todraw = document.getElementById("title");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 690;
 document.getElementById("title").innerHTML = ("Draw: " + word);
@@ -23,12 +23,12 @@ function chatsubmit() {
   console.log("message")
 }
 
-socket.on( 'drawconnect', function(){
+socket.on('drawconnect', function(){
   console.log("connected")
   socket.emit('createid')
 })
 
-socket.on( 'chatprint', function( message){
+socket.on('chatprint', function(message){
   console.log("incoming message");
   var node = document.createElement("LI");      
   var textnode = document.createTextNode(message);
@@ -36,12 +36,12 @@ socket.on( 'chatprint', function( message){
   document.getElementById("chat").appendChild(node);
 })
 
-socket.on( 'receiveid', function( id){
+socket.on('receiveid', function(id){
   const clientid = id
   return clientid
 })
 
-socket.on( 'drawreceive', function(args){
+socket.on('drawreceive', function(args){
   console.log("Incoming drawing")
   ctx.beginPath();
   ctx.lineWidth = args[5];
@@ -74,14 +74,13 @@ function draw(e) {
 }
 
 function changeWord() {
-  word = words[Math.floor(Math.random() * words.length)];
-  document.getElementById("title").innerHTML = ("Draw: " + word);
+  socket.emit('changeword')
 }
 
-async function getWords() {
-  const data = await fetch("/words.json").then(res => res.json()).catch(err => console.log(`Error fetching words: ${err}`));
-  return data.words;
-}
+socket.on('wordchanged', function(newword){
+  todraw.innerHTML = ("Draw: " + newword);
+})
+
 
 //function setColor(color) {
 //  const colors = { red: "#FF0000", green: "#00FF00", blue: "#0000FF", black: "#000000", yellow: "#FFFF00" };
@@ -128,4 +127,3 @@ function white() {
 document.addEventListener("mouseenter", setPosition);
 document.addEventListener("mousedown", setPosition);
 document.addEventListener("mousemove", draw);
-const words = getWords();
