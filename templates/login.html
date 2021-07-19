@@ -4,34 +4,26 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <meta charset="utf-8">
         <link href="/static/loginstyle.css" rel="stylesheet">
+        <script src= "/static/loginapp.js"></script>
         <title>
             Online Pictionary
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
 
+    
+    <p id="title">Welcome To Pictionary</p>
+    <p2 id="title2">Please Login</p2>
 
     <input id = "username" placeholder="Username" type="text"></input>
-    <p id="title"></p>
-    
-    <ul id="chat">
-        <li>Chat Messages Will Appear Here</li>
-    </ul>
 
-    <button id="namesubmit" type="button" onclick="namesubmit()">Save</button>
-    <button id="chatsubmit" type="button" onclick="chatsubmit()">Send</button>
-    <button id="red" type="button" onclick="red()">Red</button>
-    <button id="green" type="button" onclick="green()">Green</button>
-    <button id="blue" type="button" onclick="blue()">Blue</button>
-    <button id="yellow" type="button" onclick="yellow()">Yellow</button>
-    <button id="orange" type="button" onclick="orange()">Orange</button>
-    <button id="purple" type="button" onclick="purple()">Purple</button>
-    <button id="black" type="button" onclick="black()">Black</button>
-    <button id="gray" type="button" onclick="gray()">Gray</button>
-    <button id="gray2" type="button" onclick="gray2()">Light Gray</button>
-    <button id="white" type="button" onclick="white()">White</button>
-    
-    <button id = "word" type="button" onclick="changeWord()">New Word</button>
+    <button id="sumbit" type="button" onclick="namesubmit()">Save</button>
 
-    <script src= "/static/loginapp.js"></script>
+    <button id="room1" type="menu" onclick="room1()">Room1</button>
+    <button id="room2" type="menu" onclick="room2()">Room2</button>
+    <button id="room3" type="menu" onclick="room3()">Room3</button>
+    <button id="room4" type="menu" onclick="room4()">Room4</button>
+    <button id="room5" type="menu" onclick="room5()">Room5</button>
+    <button id="join" type="button" onclick="join()">Join</button>
+
 </html>
