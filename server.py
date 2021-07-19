@@ -1,7 +1,10 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room
 import sys
+import json
+import random
 
+newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
 socketio = SocketIO(app)
@@ -40,8 +43,17 @@ def handle_drawing(args):
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
-    print(("message:" + str(message)), file=sys.stdout, flush=True)
+    print("message:" + str(message))
     socketio.emit('chatprint', message)
+
+@socketio.on('changeword')
+def handle_word_change():
+    with open('words.json') as f:
+        data = json.loads(f.read())
+        randomint = random.randint(0,5)
+        global newword 
+        newword = data['words'][randomint]
+        socketio.emit('wordchanged', newword)
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)
