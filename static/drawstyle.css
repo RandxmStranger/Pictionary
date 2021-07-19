@@ -118,6 +118,9 @@ body {
     list-style: none;
     background-color: white;
     padding-left: 5;
+    text-align: left;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
 }
 #chatsubmit {
     position: fixed;
@@ -134,6 +137,13 @@ body {
     right: 70;
     bottom: 645;
     width: 180;
+}
+#namesubmit {
+    position: fixed;
+    right:20;
+    bottom: 645;
+    background-color: white;
+    color: black;
 }
 .colorButton {
     position: fixed;

@@ -26,7 +26,7 @@ def on_leave(data):
 
 @app.route("/")
 def connect():
-    return render_template("spectate.html")
+    return render_template("login.html")
 
 @app.route("/draw")
 def drawconnect():
@@ -43,6 +43,8 @@ def handle_drawing(args):
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
+    if message.upper() == newword.upper():
+        message = "---SOMEONE HAS GUESSED THE WORD---"
     print("message:" + str(message))
     socketio.emit('chatprint', message)
 
