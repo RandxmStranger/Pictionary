@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room
-import sys
 import json
 import random
 
@@ -11,8 +10,8 @@ socketio = SocketIO(app)
 
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
-    room = data['room']
+    username = data[0]
+    room = data[1]
     join_room(room)
     socketio.emit(username + ' has entered the room.', to=room)
 
@@ -53,7 +52,7 @@ def handle_word_change():
     with open('words.json') as f:
         data = json.loads(f.read())
         randomint = random.randint(0,5)
-        global newword 
+        global newword
         newword = data['words'][randomint]
         socketio.emit('wordchanged', newword)
 

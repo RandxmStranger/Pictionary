@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
@@ -15,15 +16,20 @@
     <p id="title">Welcome To Pictionary</p>
     <p2 id="title2">Please Login</p2>
 
-    <input id = "username" placeholder="Username" type="text"></input>
+    <input id = "username" placeholder="Username" type="text"></input><br>
 
-    <button id="sumbit" type="button" onclick="namesubmit()">Save</button>
+    <input type="radio" id="room1" name="rooms" value=1>
+    <label for="1">Room 1</label><br>
+    <input type="radio" id="room2" name="rooms" value=2>
+    <label for="2">Room 2</label><br>
+    <input type="radio" id="room3" name="rooms" value=3>
+    <label for="3">Room 3</label><br>
+    <input type="radio" id="room4" name="rooms" value=4>
+    <label for="4">Room 4</label><br>
+    <input type="radio" id="room5" name="rooms" value=5>
+    <label for="5">Room 5</label><br>
 
-    <button id="room1" type="menu" onclick="room1()">Room1</button>
-    <button id="room2" type="menu" onclick="room2()">Room2</button>
-    <button id="room3" type="menu" onclick="room3()">Room3</button>
-    <button id="room4" type="menu" onclick="room4()">Room4</button>
-    <button id="room5" type="menu" onclick="room5()">Room5</button>
+
     <button id="join" type="button" onclick="join()">Join</button>
 
 </html>
