@@ -11,13 +11,13 @@ const chatinput = document.getElementById("chatinput");
 
 var pos = { x: 0, y: 0 };
 
-function setPosition(e) {
+function setPosition(e) { //Gets mouse position relative to the canvas
   var rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
   pos.y = e.clientY - rect.top;
 }
 
-function chatsubmit() {
+function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
   chatinput.value='';
   console.log("message")
@@ -28,7 +28,7 @@ socket.on('drawconnect', function(){
   socket.emit('createid')
 })
 
-socket.on('chatprint', function(message){
+socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received
   console.log("incoming message");
   var node = document.createElement("LI");      
   var textnode = document.createTextNode(message);
@@ -41,16 +41,16 @@ socket.on('receiveid', function(id){
   return clientid
 })
 
-socket.on('drawreceive', function(args){
-  console.log("Incoming drawing")
-  ctx.beginPath();
-  ctx.lineWidth = args[5];
-  ctx.lineCap = "round";
-  ctx.strokeStyle = args[4];
-  ctx.moveTo(args[0], args[1]);
-  ctx.lineTo(args[2], args[3]);
-  ctx.stroke();
-})
+//socket.on('drawreceive', function(args){
+//  console.log("Incoming drawing")
+//  ctx.beginPath();
+//  ctx.lineWidth = args[5];
+//  ctx.lineCap = "round";
+//  ctx.strokeStyle = args[4];
+//  ctx.moveTo(args[0], args[1]);
+//  ctx.lineTo(args[2], args[3]);
+//  ctx.stroke();
+//})
 
 function draw(e) {
   if (e.buttons !== 1) return;
