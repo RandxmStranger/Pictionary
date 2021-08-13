@@ -1,12 +1,24 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, join_room, leave_room
+from flask_login import LoginManager, UserMixin
+from flask_sqlalchemy import SQLAlchemy
 import json
 import random
 
 newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
 socketio = SocketIO(app)
+
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key = True) #Creates an id column, which will be used as the primary key for a user to link tables, required to be called id by flask-login
+    username = db.Column(db.String(15)) #Creates a username column, usernames cant be more than 15 chars
+    
 
 @socketio.on('join')
 def on_join(data):
