@@ -1,13 +1,13 @@
-<h2>Login</h2>
+<h2>Register</h2>
 <div>
     {% with alert = get_flashed_messages() %}
     {% if alert %}
         <div> {{alert[0]}} </div>
     {% endif %}
     {% endwith %}
-    <form action="login", method="POST">
+    <form action="register" method="POST">
         <input type="text" name="username" placeholder="Username">
-        <input type="password" name ="password" placeholder="Password">
-        <button>Login</button>
+        <input type="password" name="password" placeholder="Password">
+        <button>Register</button>
     </form>
 </div>
