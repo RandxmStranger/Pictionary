@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, flash, redirect
 from flask.globals import current_app, session
 from flask.helpers import url_for
-from flask_login.utils import login_required
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_login.utils import _get_user, login_required
+from flask_socketio import SocketIO, join_room, leave_room, rooms
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-import json
+from game import assign_roles, give_score
 import random
+import json
 
 newword = "Something"
 app = Flask(__name__)
@@ -15,14 +16,21 @@ app.config['SECRET_KEY'] = 'fortnite'
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
 socketio = SocketIO(app)
 
+sessions = {}
+sids = {}
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "/login"
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key = True) #Creates an id column, which will be used as the primary key for a user to link tables, required to be called id by flask-login
     username = db.Column(db.String(14), unique = True) #Creates a username column, usernames cant be more than 15 chars
     password = db.Column(db.String(100))
+    artist = db.Column(db.Boolean())    # \
+    points = db.Column(db.Integer)      # | - MOVE TO MEMORY
+    guessed = db.Column(db.Boolean())   # /
     
 @login_manager.user_loader
 def load_user(id):
@@ -31,7 +39,9 @@ def load_user(id):
 @app.route("/")
 @login_required
 def connect():
-    return render_template("welcome.html", username = current_user.username)
+    user = User.query.filter_by(username=current_user.username).first()
+    db.session.commit()
+    return render_template("welcome.html", username = user.username)
 
 @app.route("/register")
 def register():
@@ -95,9 +105,10 @@ def handle_drawing(args):
     socketio.emit('drawreceive', args)
 
 @socketio.on('chatsubmit')
-def handle_chat(message):
+def handle_chat(message,r_code):
     if message.upper() == newword.upper():
         message = "---SOMEONE HAS GUESSED THE WORD---"
+        sessions
     print("message:" + str(message))
     socketio.emit('chatprint', message)
 
@@ -109,6 +120,55 @@ def handle_word_change():
         global newword
         newword = data['words'][randomint]
         socketio.emit('wordchanged', newword)
+
+class Session():
+    def __init__(self, roomcode) -> None:
+        self.clients = []
+        self.code = roomcode
+        self.started = False
+
+    def start(self):
+        for i in self.clients:
+            socketio.emit('guesser', self.code, room = i.sessionid)
+        socketio.emit('artist', self.code, room = self.artist.request.sid)
+
+@socketio.on("join")
+def handle_joining(room_code):
+    if room_code in sessions:
+        join_room(room_code)
+        sessions[room_code].clients.append(current_user)
+        sids[current_user.username] = request.sid
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[current_user.username])
+    else:
+        print("Creating room ", room_code)
+        sessions[room_code] = Session(room_code)
+        sessions[room_code].clients.append(current_user)
+        join_room(room_code)
+        sids[current_user.username] = request.sid
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[current_user.username])
+
+@app.route("/game/<r_code>")
+@login_required
+def gameconnect(r_code):
+    if sessions[r_code].started == False:
+         return render_template("pregame.html")
+    else:
+        return render_template("specate.html")
+
+@socketio.on("start_round")
+def start_round(r_code):
+    for player in sessions[r_code]:
+        socketio.emit("join_new_round", room = sids[player.username])
+
+@socketio.on("new_round")
+def new_round(r_code):
+    #sessions[r_code].clients = give_score(sessions[r_code.clients])
+    if current_user.artist:
+        return render_template("draw.html")
+    else:
+        return render_template("spectate.html")
+
+#socketio.emit("message", room = User.query.filter_by(username=username).first())
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)

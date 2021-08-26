@@ -5,7 +5,6 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
         <meta charset="utf-8">
         <link href="/static/drawstyle.css" rel="stylesheet">
-        <script src= "/static/drawapp.js"></script>
         <title>
             Online Pictionary
         </title>
@@ -15,7 +14,6 @@
     <input id="hex" placeholder="Enter Hex Code"></input>
     <input id="brush" placeholder="Brush Width" type="number" min="1" max="100"></input>
     <input id ="chatinput" placeholder="Message" type="text"></input>
-    <input id = "username" placeholder="Username" type="text"></input>
     <canvas id="drawcanvas"></canvas>
     <p id="title"></p>
     
@@ -23,7 +21,6 @@
         <li>Chat Messages Will Appear Here</li>
     </ul>
 
-    <button id="namesubmit" type="button" onclick="namesubmit()">Save</button>
     <button id="chatsubmit" type="button" onclick="chatsubmit()">Send</button>
     <button id="red" type="button" onclick="red()">Red</button>
     <button id="green" type="button" onclick="green()">Green</button>
@@ -37,5 +34,6 @@
     <button id="white" type="button" onclick="white()">White</button>
     
     <button id = "word" type="button" onclick="changeWord()">New Word</button>
-
+    
+    <script src= "/static/drawapp.js"></script>
 </html>
