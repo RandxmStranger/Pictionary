@@ -1,6 +1,5 @@
 const canvas = document.getElementById("drawcanvas");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
-var lastmove = 0
 const ctx = canvas.getContext("2d");
 const todraw = document.getElementById("title");
 ctx.canvas.width = 1000;
@@ -9,6 +8,7 @@ document.getElementById("title").innerHTML = ("Draw: " + word);
 const hex = document.getElementById("hex");
 const chatinput = document.getElementById("chatinput");
 
+drawing = false
 var pos = { x: 0, y: 0 };
 
 function setPosition(e) { //Gets mouse position relative to the canvas
@@ -23,9 +23,16 @@ function chatsubmit() { //Send the current text in the chat box to the server th
   console.log("message")
 }
 
-socket.on('drawconnect', function(){
-  console.log("connected")
-  socket.emit('createid')
+socket.on("newRound", function(){
+  var room = io.sockets.adapter.rooms[socket.room]
+  var ids = Object.keys(room.sockets)
+  if (room.length == 1) {
+    room.drawer = 0
+  }
+  else if (socket.id == ids[room.drawer]){
+    room.drawer += 1
+    room.drawer %= ids.length
+  }
 })
 
 socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received
@@ -36,21 +43,10 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   document.getElementById("chat").appendChild(node);
 })
 
-socket.on('receiveid', function(id){
-  const clientid = id
-  return clientid
+socket.on('drawreceive', function(canvasReceived){
+  document.getElementById("drawcanvas").src = canvasReceived;
+  console.log("Incoming drawing");
 })
-
-//socket.on('drawreceive', function(args){
-//  console.log("Incoming drawing")
-//  ctx.beginPath();
-//  ctx.lineWidth = args[5];
-//  ctx.lineCap = "round";
-//  ctx.strokeStyle = args[4];
-//  ctx.moveTo(args[0], args[1]);
-//  ctx.lineTo(args[2], args[3]);
-//  ctx.stroke();
-//})
 
 function draw(e) {
   if (e.buttons !== 1) return;
@@ -61,16 +57,11 @@ function draw(e) {
   ctx.lineCap = "round";
   ctx.strokeStyle = color;
   ctx.moveTo(pos.x, pos.y);
-  let pos1x = pos.x
-  let pos1y = pos.y
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
-  let pos2x = pos.x
-  let pos2y = pos.y
   ctx.stroke();
-  var args = [pos1x, pos1y, pos2x, pos2y ,color, width]
-  socket.emit('drawing',args)
-  lastmove = Date.now();
+  var canvasToSend = document.getElementById('drawcanvas').toDataURL();
+  socket.emit('drawing',canvasToSend)
 }
 
 function changeWord() {
@@ -81,47 +72,10 @@ socket.on('wordchanged', function(newword){
   todraw.innerHTML = ("Draw: " + newword);
 })
 
+colors = {'red': '#F00', 'green':'#0F0', 'blue':'00F', 'yellow':'#FF0', 'orange':'#F80', 'purple':'#B0F', 'black':'#000', 'gray':'#333', 'gray2':'#666', 'white':'#FFF'}
 
-//function setColor(color) {
-//  const colors = { red: "#FF0000", green: "#00FF00", blue: "#0000FF", black: "#000000", yellow: "#FFFF00" };
-//  if (!colors[color]) return;
-//  hex.value = colors[color];
-//};
-
-//const buttons = document.querySelectorAll(".colorButton");
-//buttons.forEach(button => {
-//  button.addEventListener("click", () => setColor(button.value));
-//});
-
-function red() {
-  hex.value = "#FF0000";
-}
-function green() {
-  hex.value = "#00FF00";
-}
-function blue() {
-  hex.value = "#0000FF";
-}
-function yellow() {
-  hex.value = "#FFFF00";
-}
-function orange() {
-  hex.value = "#FF8800";
-}
-function purple() {
-  hex.value = "#BB00FF";
-}
-function black() {
-  hex.value = "#000000";
-}
-function gray() {
-  hex.value = "#333333";
-}
-function gray2() {
-  hex.value = "#666666";
-}
-function white() {
-  hex.value = "#FFFFFF"
+function changecolor(color) {
+  hex.value = colors[color]
 }
 
 document.addEventListener("mouseenter", setPosition);

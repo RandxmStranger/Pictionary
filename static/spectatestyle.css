@@ -1,24 +1,14 @@
 body {
     background-color: grey;
 }
-#draw {
+#drawcanvas {
     display:block;
     background-color: white;
     width: 1000px;
     height: 680px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 50;
-}
-#title {
-    display: block;
-    position: fixed;
-    margin-left: 650px;
-    margin-top: -720px;
-    font-family: "Comic Sans MS Bold" , "Comic Sans", cursive;
-    font-size: 21;
-    font-weight: bolder;
-    background-color: white;
+    margin-top: 60px;
 }
 #chatinput {
     display: block;
@@ -39,6 +29,9 @@ body {
     list-style: none;
     background-color: white;
     padding-left: 5px;
+    text-align: left;
+    overflow-wrap: break-word;
+    overflow-y: scroll;
 }
 #chatsubmit {
     position: fixed;
@@ -47,6 +40,10 @@ body {
     background-color: white;
     color: black;
 }
-.colorButton {
+#word {
     position: fixed;
-  }
+    left:20px;
+    bottom:15px;
+    background-color: white;
+    color: black;   
+}
