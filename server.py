@@ -12,7 +12,7 @@ import json
 newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
-app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary 2.0/login.db'
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
 socketio = SocketIO(app)
 
 sessions = {}
