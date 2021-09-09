@@ -1,7 +1,7 @@
 body {
     background-color: grey;
 }
-#drawcanvas {
+#spectatecanvas {
     display:block;
     background-color: white;
     width: 1000px;

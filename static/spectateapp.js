@@ -4,8 +4,13 @@ const ctx = canvas.getContext("2d");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 680;
 const chatinput = document.getElementById("chatinput");
+let img = new Image() 
 
 drawing = false
+
+img.onload = function() {
+  ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+}
 
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
@@ -34,8 +39,7 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
 })
 
 socket.on('drawreceive', function(canvasReceived){
-  document.getElementById("spectatecanvas").src = canvasReceived;
-  console.log("Incoming drawing");
+  img.src = canvasReceived
 })
 
 colors = {'red': '#F00', 'green':'#0F0', 'blue':'00F', 'yellow':'#FF0', 'orange':'#F80', 'purple':'#B0F', 'black':'#000', 'gray':'#333', 'gray2':'#666', 'white':'#FFF'}
@@ -44,6 +48,7 @@ function changecolor(color) {
   hex.value = colors[color]
 }
 
-document.addEventListener("mouseenter", setPosition);
-document.addEventListener("mousedown", setPosition);
-document.addEventListener("mousemove", draw);
+socket.on('drawreceive', function(canvasReceived){
+  document.getElementById("spectatecanvas").src = canvasReceived;
+  console.log("Incoming drawing");
+})

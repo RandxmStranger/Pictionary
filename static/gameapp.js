@@ -43,11 +43,6 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   document.getElementById("chat").appendChild(node);
 })
 
-socket.on('drawreceive', function(canvasReceived){
-  document.getElementById("drawcanvas").src = canvasReceived;
-  console.log("Incoming drawing");
-})
-
 function draw(e) {
   if (e.buttons !== 1) return;
   var color = document.getElementById("hex").value;
