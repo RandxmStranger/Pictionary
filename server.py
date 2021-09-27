@@ -13,7 +13,8 @@ newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
-socketio = SocketIO(app)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+socketio = SocketIO(app,async_handlers=True)
 
 sessions = {}
 sids = {}
@@ -93,10 +94,10 @@ def handle_drawing(args):
     socketio.emit('drawreceive', args)
 
 @socketio.on('chatsubmit')
-def handle_chat(message,r_code):
+def handle_chat(message):
     if message.upper() == newword.upper():
         message = "---SOMEONE HAS GUESSED THE WORD---"
-    print("message:" + str(message))
+    print(current_user.username + ":" + str(message))
     socketio.emit('chatprint', message)
 
 @socketio.on('changeword')

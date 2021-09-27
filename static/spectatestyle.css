@@ -1,9 +1,8 @@
 body {
     background-color: grey;
 }
-#spectatecanvas {
+#image {
     display:block;
-    background-color: white;
     width: 1000px;
     height: 680px;
     margin-left: auto;

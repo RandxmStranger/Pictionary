@@ -11,6 +11,8 @@ const chatinput = document.getElementById("chatinput");
 drawing = false
 var pos = { x: 0, y: 0 };
 
+let uid = null
+
 function setPosition(e) { //Gets mouse position relative to the canvas
   var rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
@@ -55,8 +57,6 @@ function draw(e) {
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-  var canvasToSend = document.getElementById('drawcanvas').toDataURL();
-  socket.emit('drawing',canvasToSend)
 }
 
 function changeWord() {
@@ -72,6 +72,12 @@ colors = {'red': '#F00', 'green':'#0F0', 'blue':'00F', 'yellow':'#FF0', 'orange'
 function changecolor(color) {
   hex.value = colors[color]
 }
+
+setInterval(function(canvasToSend){
+  return function(){
+    socket.emit("drawing", canvasToSend);
+  };
+}(document.getElementById('drawcanvas').toDataURL()), 500);
 
 document.addEventListener("mouseenter", setPosition);
 document.addEventListener("mousedown", setPosition);

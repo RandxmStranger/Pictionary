@@ -1,16 +1,11 @@
 const canvas = document.getElementById("spectatecanvas");
 var socket = io.connect('http://' + document.domain + ':' + location.port);
-const ctx = canvas.getContext("2d");
-ctx.canvas.width = 1000;
-ctx.canvas.height = 680;
 const chatinput = document.getElementById("chatinput");
-let img = new Image() 
+let img = document.getElementById("image"); 
 
 drawing = false
 
-img.onload = function() {
-  ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-}
+let uid = null
 
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
@@ -39,7 +34,8 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
 })
 
 socket.on('drawreceive', function(canvasReceived){
-  img.src = canvasReceived
+  img.src = ("data:image/png;base64," +  str(canvasReceived))
+  console.log("canvas received")
 })
 
 colors = {'red': '#F00', 'green':'#0F0', 'blue':'00F', 'yellow':'#FF0', 'orange':'#F80', 'purple':'#B0F', 'black':'#000', 'gray':'#333', 'gray2':'#666', 'white':'#FFF'}
@@ -47,8 +43,3 @@ colors = {'red': '#F00', 'green':'#0F0', 'blue':'00F', 'yellow':'#FF0', 'orange'
 function changecolor(color) {
   hex.value = colors[color]
 }
-
-socket.on('drawreceive', function(canvasReceived){
-  document.getElementById("spectatecanvas").src = canvasReceived;
-  console.log("Incoming drawing");
-})
