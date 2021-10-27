@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect, session
 from flask.globals import current_app, session
 from flask.helpers import url_for
 from flask_login.utils import _get_user, login_required
@@ -40,6 +40,7 @@ def load_user(id):
 def connect():
     user = User.query.filter_by(username=current_user.username).first()
     db.session.commit()
+    session['username'] = current_user.username
     return render_template("index.html", username = user.username)
 
 @app.route("/register")
@@ -90,14 +91,15 @@ def logout():
 
 @socketio.on('drawing')
 def handle_drawing(args):
-    print("received drawing", args)
+    print("received drawing")
     socketio.emit('drawreceive', args)
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
     if message.upper() == newword.upper():
         message = "---SOMEONE HAS GUESSED THE WORD---"
-    print(current_user.username + ":" + str(message))
+    message = current_user.username + ":" + str(message)
+    print(message)
     socketio.emit('chatprint', message)
 
 @socketio.on('changeword')
@@ -130,22 +132,24 @@ def new_round(room_code):
 def handle_joining(room_code):
     if room_code in sessions:
         join_room(room_code)
-        sessions[room_code].clients.append(current_user)
+        sessions[room_code].clients.append(session['username'])
         sessions[room_code].started = True
-        sids[current_user.username] = request.sid
-        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[current_user.username])
+        sids[session['username']] = request.sid
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
     else:
         print("Creating room ", room_code)
         sessions[room_code] = Session(room_code)
-        sessions[room_code].clients.append(current_user)
+        sessions[room_code].clients.append(session['username'])
         join_room(room_code)
-        sids[current_user.username] = request.sid
-        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[current_user.username])
+        sids[session['username']] = request.sid
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
 
 @app.route("/game/<r_code>")
 @login_required
 def gameconnect(r_code):
-    if sessions[r_code].started == False:
+    print(sessions[r_code].clients[sessions[r_code].drawer])
+    print(session['username'])
+    if session['username'] == sessions[r_code].clients[sessions[r_code].drawer]:
          return render_template("game.html")
     else:
         return render_template("spectate.html")
