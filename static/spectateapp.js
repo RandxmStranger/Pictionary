@@ -12,16 +12,9 @@ function chatsubmit() { //Send the current text in the chat box to the server th
   console.log("message");
 }
 
-socket.on("newRound", function(){
-  const room = io.sockets.adapter.rooms[socket.room];
-  const ids = Object.keys(room.sockets);
-  if (room.length == 1) {
-    room.drawer = 0;
-  }
-  else if (socket.id == ids[room.drawer]){
-    room.drawer += 1;
-    room.drawer %= ids.length;
-  }
+socket.on('setDrawer', function(room_code) {
+  location.reload()
+  socket.emit('newDrawer', room_code)
 })
 
 socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received

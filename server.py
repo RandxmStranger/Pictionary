@@ -98,7 +98,13 @@ def handle_drawing(args):
 def handle_chat(message):
     if message.upper() == newword.upper():
         message = "---SOMEONE HAS GUESSED THE WORD---"
-    message = current_user.username + ":" + str(message)
+        for key in sessions:
+            print(key)
+            print(sessions[key])
+            if session['username'] in sessions[key].clients:
+                new_round(key)
+    else:
+        message = session['username'] + ":" + str(message)
     print(message)
     socketio.emit('chatprint', message)
 
@@ -120,13 +126,14 @@ class Session():
 
 @socketio.on("newRound")
 def new_round(room_code):
-    session = sessions[room_code]
-    if (len(session.clients) == 1):
-      session.drawer = 0
+    current_room = sessions[room_code]
+    if (len(sessions[room_code].clients) == 1):
+      current_room.drawer = 0
     else:
-      session.drawer += 1
-      session.drawer = session.drawer % len(session.clients)
-    socketio.emit("setDrawer", room = room_code)
+      current_room.drawer += 1
+      current_room.drawer = current_room.drawer % len(current_room.clients)
+      for i in sessions[room_code].clients:
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[i])
 
 @socketio.on("join")
 def handle_joining(room_code):
@@ -153,6 +160,14 @@ def gameconnect(r_code):
          return render_template("game.html")
     else:
         return render_template("spectate.html")
+
+@socketio.on("newDrawer")
+def handle_joining(room_code):
+    join_room(room_code)
+    sessions[room_code].clients.append(session['username'])
+    sessions[room_code].started = True
+    sids[session['username']] = request.sid
+    socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)
