@@ -5,6 +5,7 @@ from flask_login.utils import _get_user, login_required
 from flask_socketio import SocketIO, join_room, leave_room, rooms
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
+from os.path import dirname, realpath
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import json
@@ -12,7 +13,8 @@ import json
 newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
-app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
+current_folder = dirname(realpath(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{current_folder}login.db'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app,async_handlers=True)
 
