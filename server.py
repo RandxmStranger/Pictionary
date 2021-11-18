@@ -12,7 +12,7 @@ import json
 newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
-app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///C:/Users/Dustin/Pictionary/login.db'
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///./login.db'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app,async_handlers=True)
 
@@ -25,11 +25,23 @@ login_manager.init_app(app)
 login_manager.login_view = "/login"
 
 class User(UserMixin, db.Model):
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key = True) #Creates an id column, which will be used as the primary key for a user to link tables, required to be called id by flask-login
     username = db.Column(db.String(14), unique = True) #Creates a username column, usernames cant be more than 14 chars
     password = db.Column(db.String(100))
-    #successful_guesses = db.Column(db.Integer)
-    #successful_drawings = db.Column(db.Integer)
+    score = db.relationship("Score")
+
+class Score(db.Model):
+    __tablename__ = "score"
+    id = db.Column(db.Integer, primary_key = True)
+    player_id = db.Column(db.ForeignKey("user.id"))
+    words_guessed = db.Column(db.Integer)
+    words_drawn = db.Column(db.Integer)
+
+class Game(db.Model):
+    __tablename__ = "game"
+    id = db.Column(db.Integer, primary_key = True)
+    room_code = db.Column(db.String(20))
 
 @login_manager.user_loader
 def load_user(id):
