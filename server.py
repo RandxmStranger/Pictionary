@@ -5,6 +5,7 @@ from flask_login.utils import _get_user, login_required
 from flask_socketio import SocketIO, join_room, leave_room, rooms
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
+from os.path import dirname, realpath
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import json
