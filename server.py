@@ -145,8 +145,8 @@ def new_round(room_code):
     else:
       current_room.drawer += 1
       current_room.drawer = current_room.drawer % len(current_room.clients)
-      for i in sessions[room_code].clients:
-        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[i])
+      #for i in sessions[room_code].clients:
+      socketio.emit('refresh')
 
 @socketio.on("join")
 def handle_joining(room_code):

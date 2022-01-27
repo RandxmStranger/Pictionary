@@ -61,6 +61,10 @@ socket.on('wordchanged', function(newword){
   todraw.innerHTML = ("Draw: " + newword);
 })
 
+socket.on("refresh", function(){
+  location.reload()
+})
+
 colors = { red: '#F00', green: '#0F0', blue: '#00F', yellow: '#FF0', orange: '#F80', purple: '#B0F', black: '#000', gray: '#333', gray2: '#666', white: '#FFF' };
 
 function changecolor(color) {

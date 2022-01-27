@@ -24,6 +24,10 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   document.getElementById("chat").appendChild(node);
 })
 
+socket.on("refresh", function(){
+  location.reload()
+})
+
 socket.on('drawreceive', function(canvasReceived){
   const receivedImage = new Image(1000,680);
   receivedImage.src = canvasReceived;
