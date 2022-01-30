@@ -13,28 +13,30 @@ const pos = { x: 0, y: 0 };
 
 let uid = null;
 
+socket.emit('changeword');
+
 function setPosition(e) { //Gets mouse position relative to the canvas
   const rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
   pos.y = e.clientY - rect.top;
-}
+};
 
 document.getElementById("chatinput").addEventListener("keyup", function(event) {
   if (event.key === "Enter") {
     chatsubmit();
-  }
+  };
 });
 
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
   chatinput.value = '';
   console.log("message");
-}
+};
 
 socket.on('setDrawer', function(room_code) {
-  location.reload()
-  socket.emit('newDrawer', room_code)
-})
+  location.reload();
+  socket.emit('newDrawer', room_code);
+});
 
 socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received
   console.log("incoming message");
@@ -43,7 +45,7 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   node.appendChild(textnode);
   document.getElementById("chat").appendChild(node);
   document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
-})
+});
 
 function draw(e) {
   if (e.buttons !== 1) return;
@@ -57,12 +59,11 @@ function draw(e) {
   setPosition(e);
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-}
+};
 
 function changeWord() {
   socket.emit('changeword');
-}
-changeWord();
+};
 
 socket.on('wordchanged', function(newword){
   todraw.innerHTML = ("Draw: " + newword);

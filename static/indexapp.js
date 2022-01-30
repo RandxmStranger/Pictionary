@@ -5,6 +5,12 @@ function joinroom(){
     socket.emit('join', room_code);
 }
 
+document.getElementById("room_code").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        joinroom();
+    };
+});
+
 function logout(){
     location.href = "/logout"
 }
