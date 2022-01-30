@@ -6,6 +6,12 @@ const ctx = canvas.getContext("2d")
 let drawing = false;
 let uid = null;
 
+document.getElementById("chatinput").addEventListener("keyup", function(event) {
+  if (event.key === "Enter") {
+    chatsubmit();
+  }
+});
+
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
   chatinput.value = '';

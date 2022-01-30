@@ -19,6 +19,12 @@ function setPosition(e) { //Gets mouse position relative to the canvas
   pos.y = e.clientY - rect.top;
 }
 
+document.getElementById("chatinput").addEventListener("keyup", function(event) {
+  if (event.key === "Enter") {
+    chatsubmit();
+  }
+});
+
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
   chatinput.value = '';
