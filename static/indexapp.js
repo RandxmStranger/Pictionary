@@ -5,6 +5,10 @@ function joinroom(){
     socket.emit('join', room_code);
 }
 
+function logout(){
+    location.href = "/logout"
+}
+
 socket.on('redirect', function(data) {
     window.location = data.url;
 });

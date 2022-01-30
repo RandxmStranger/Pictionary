@@ -9,6 +9,7 @@ from os.path import dirname, realpath
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import json
+import time
 
 newword = "Something"
 app = Flask(__name__)
@@ -110,16 +111,16 @@ def handle_drawing(args):
 @socketio.on('chatsubmit')
 def handle_chat(message):
     if message.upper() == newword.upper():
-        message = "---SOMEONE HAS GUESSED THE WORD---"
+        message = (session["username"] +  " Has Guessed The Word. The Word Was: " + newword)
+        socketio.emit('chatprint', message)
+        time.sleep(3)
         for key in sessions:
-            print(key)
-            print(sessions[key])
             if session['username'] in sessions[key].clients:
                 new_round(key)
+                break
     else:
         message = session['username'] + ":" + str(message)
-    print(message)
-    socketio.emit('chatprint', message)
+        socketio.emit('chatprint', message)
 
 @socketio.on('changeword')
 def handle_word_change():
