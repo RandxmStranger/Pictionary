@@ -36,6 +36,7 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   const textnode = document.createTextNode(message);
   node.appendChild(textnode);
   document.getElementById("chat").appendChild(node);
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
 })
 
 function draw(e) {

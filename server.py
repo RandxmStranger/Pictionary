@@ -125,7 +125,7 @@ def handle_chat(message):
 def handle_word_change():
     with open('words.json') as f:
         data = json.loads(f.read())
-        randomint = random.randint(0,5)
+        randomint = random.randint(0,23)
         global newword
         newword = data['words'][randomint]
         socketio.emit('wordchanged', newword)
@@ -145,7 +145,6 @@ def new_round(room_code):
     else:
       current_room.drawer += 1
       current_room.drawer = current_room.drawer % len(current_room.clients)
-      #for i in sessions[room_code].clients:
       socketio.emit('refresh')
 
 @socketio.on("join")
