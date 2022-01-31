@@ -13,14 +13,13 @@ const pos = { x: 0, y: 0 };
 
 let uid = null;
 
-socket.emit('changeword');
-
 function setPosition(e) { //Gets mouse position relative to the canvas
   const rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
   pos.y = e.clientY - rect.top;
 };
 
+socket.emit("changeword")
 document.getElementById("chatinput").addEventListener("keyup", function(event) {
   if (event.key === "Enter") {
     chatsubmit();
@@ -28,8 +27,10 @@ document.getElementById("chatinput").addEventListener("keyup", function(event) {
 });
 
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
-  socket.emit('chatsubmit', chatinput.value);
-  chatinput.value = '';
+  if (chatinput.value != ""){ 
+    socket.emit('chatsubmit', chatinput.value);
+    chatinput.value = '';
+  }
   console.log("message");
 };
 
