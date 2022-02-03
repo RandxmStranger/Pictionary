@@ -106,13 +106,22 @@ def logout():
 @socketio.on('drawing')
 def handle_drawing(args):
     print("received drawing")
+    #print(session["key"])
     socketio.emit('drawreceive', args)
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
     if message.upper() == newword.upper():
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + newword)
-        socketio.emit('chatprint', message)
+        for key in sessions:
+            print("key" + key)
+            print ("session username, " +  session['username'])
+            print("sessions[key], " + sessions[key])
+            print("sessions[key].clients" + sessions[key].clients)
+            if session['username'] in sessions[key].clients:
+                for i in sessions[key].clients:
+                    socketio.emit('chatprint', message, room = sids[i])
+                    break
         time.sleep(3)
         for key in sessions:
             if session['username'] in sessions[key].clients:
@@ -120,7 +129,16 @@ def handle_chat(message):
                 break
     else:
         message = session['username'] + ":" + str(message)
-        socketio.emit('chatprint', message)
+        for key in sessions:
+            print("key" + key)
+            print ("session username, " +  session['username'])
+            #print("sessions[key], " + sessions[key])
+            print(sessions[key].clients)
+            if session['username'] in sessions[key].clients:
+                for i in sessions[key].clients:
+                    print(sids[i])
+                    socketio.emit('chatprint', message, room = key)
+                break
 
 @socketio.on('changeword')
 def handle_word_change():
@@ -155,12 +173,14 @@ def handle_joining(room_code):
         sessions[room_code].clients.append(session['username'])
         sessions[room_code].started = True
         sids[session['username']] = request.sid
+        print(request.sid)
         socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
     else:
         print("Creating room ", room_code)
         sessions[room_code] = Session(room_code)
         sessions[room_code].clients.append(session['username'])
         join_room(room_code)
+        print(request.sid)
         sids[session['username']] = request.sid
         socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
 

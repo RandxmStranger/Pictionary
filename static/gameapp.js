@@ -13,6 +13,8 @@ const pos = { x: 0, y: 0 };
 
 let uid = null;
 
+console.log(socket.id)
+
 function setPosition(e) { //Gets mouse position relative to the canvas
   const rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
@@ -82,8 +84,8 @@ function changecolor(color) {
 
 setInterval(function() {
   const newUrl = document.getElementById('drawcanvas').toDataURL();
-  socket.emit("drawing", newUrl);
-}, 500);
+  socket.emit("drawing", newUrl, );
+}, 500000);
 
 document.addEventListener("mouseenter", setPosition);
 document.addEventListener("mousedown", setPosition);
