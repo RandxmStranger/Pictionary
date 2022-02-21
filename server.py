@@ -5,11 +5,11 @@ from flask_login.utils import _get_user, login_required
 from flask_socketio import SocketIO, join_room, leave_room, rooms
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
-from os.path import dirname, realpath
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
 import json
 import time
+import re
 
 newword = "Something"
 app = Flask(__name__)
@@ -37,13 +37,7 @@ class Score(db.Model):
     __tablename__ = "score"
     id = db.Column(db.Integer, primary_key = True)
     player_id = db.Column(db.ForeignKey("user.id"))
-    words_guessed = db.Column(db.Integer)
-    words_drawn = db.Column(db.Integer)
-
-class Game(db.Model):
-    __tablename__ = "game"
-    id = db.Column(db.Integer, primary_key = True)
-    room_code = db.Column(db.String(20))
+    score = db.Column(db.Integer())
 
 @login_manager.user_loader
 def load_user(id):
@@ -65,7 +59,10 @@ def register():
 def register_post():
     username = request.form.get("username")
     password = request.form.get("password")
-    
+    if re.fullmatch(" *", password):
+        flash("Please enter a password")
+        return redirect("/register")
+
     user = User.query.filter_by(username=username).first()
 
     if user:
@@ -105,19 +102,18 @@ def logout():
 
 @socketio.on('drawing')
 def handle_drawing(args):
-    print("received drawing")
-    #print(session["key"])
-    socketio.emit('drawreceive', args)
+    for key in sessions:
+            if session['username'] in sessions[key].clients:
+                for i in sessions[key].clients:
+                    socketio.emit('drawreceive', args, room=sids[i])
+    
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
+    print(message*100)
     if message.upper() == newword.upper():
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + newword)
         for key in sessions:
-            print("key" + key)
-            print ("session username, " +  session['username'])
-            print("sessions[key], " + sessions[key])
-            print("sessions[key].clients" + sessions[key].clients)
             if session['username'] in sessions[key].clients:
                 for i in sessions[key].clients:
                     socketio.emit('chatprint', message, room = sids[i])
@@ -134,11 +130,12 @@ def handle_chat(message):
             print ("session username, " +  session['username'])
             #print("sessions[key], " + sessions[key])
             print(sessions[key].clients)
-            if session['username'] in sessions[key].clients:
-                for i in sessions[key].clients:
-                    print(sids[i])
-                    socketio.emit('chatprint', message, room = key)
-                break
+            for key in sessions:
+                if session['username'] in sessions[key].clients:
+                    for i in sessions[key].clients:
+                        print("sending to sid: " , sids[i])
+                        socketio.emit('chatprint', message, room = sids[i])
+                        break
 
 @socketio.on('changeword')
 def handle_word_change():
@@ -155,6 +152,7 @@ class Session():
         self.code = roomcode
         self.drawer = 0
         self.started = False
+        self.word = "Square"
 
 @socketio.on("newRound")
 def new_round(room_code):
@@ -164,7 +162,8 @@ def new_round(room_code):
     else:
       current_room.drawer += 1
       current_room.drawer = current_room.drawer % len(current_room.clients)
-      socketio.emit('refresh')
+      for i in current_room.clients:
+        socketio.emit('refresh', room = sids[i])
 
 @socketio.on("join")
 def handle_joining(room_code):
@@ -201,6 +200,10 @@ def handle_joining(room_code):
     sessions[room_code].started = True
     sids[session['username']] = request.sid
     socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
+
+@socketio.on("syncSID")
+def handle_sids():
+    sids[session["username"]] = request.sid
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)

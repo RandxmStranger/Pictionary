@@ -14,6 +14,7 @@ const pos = { x: 0, y: 0 };
 let uid = null;
 
 console.log(socket.id)
+socket.emit("syncSID")
 
 function setPosition(e) { //Gets mouse position relative to the canvas
   const rect = canvas.getBoundingClientRect();
@@ -69,7 +70,8 @@ function changeWord() {
 };
 
 socket.on('wordchanged', function(newword){
-  todraw.innerHTML = ("Draw: " + newword);
+  todraw.innerHTML = ("Draw: " + newword)
+  console.log(socket.id);
 })
 
 socket.on("refresh", function(){
@@ -84,8 +86,12 @@ function changecolor(color) {
 
 setInterval(function() {
   const newUrl = document.getElementById('drawcanvas').toDataURL();
-  socket.emit("drawing", newUrl, );
-}, 500000);
+  socket.emit("drawing", newUrl);
+}, 50000000);
+
+setInterval(function() {
+  socket.emit("syncSID", socket.id);
+}, 30000);
 
 document.addEventListener("mouseenter", setPosition);
 document.addEventListener("mousedown", setPosition);

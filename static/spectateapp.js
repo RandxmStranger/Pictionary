@@ -5,6 +5,7 @@ const ctx = canvas.getContext("2d");
 
 let drawing = false;
 let uid = null;
+socket.emit("syncSID", socket.id)
 
 document.getElementById("chatinput").addEventListener("keyup", function(event) {
   if (event.key === "Enter") {
@@ -34,6 +35,10 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
 socket.on("refresh", function(){
   location.reload();
 });
+
+setInterval(function() {
+  socket.emit("syncSID", socket.id, );
+}, 30000);
 
 socket.on('drawreceive', function(canvasReceived){
   const receivedImage = new Image(1000,680);
