@@ -140,7 +140,7 @@ def handle_chat(message):
 def handle_word_change():
     with open("words.json") as f:
         data = json.loads(f.read())
-        randomint = random.randint(0,23)
+        randomint = random.randint(0,62)
         global newword
         newword = data['words'][randomint]
         socketio.emit('wordchanged', newword)
