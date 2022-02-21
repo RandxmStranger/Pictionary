@@ -90,7 +90,7 @@ setInterval(function() {
 }, 50000000);
 
 setInterval(function() {
-  socket.emit("syncSID", socket.id);
+  socket.emit("syncSID");
 }, 30000);
 
 document.addEventListener("mouseenter", setPosition);

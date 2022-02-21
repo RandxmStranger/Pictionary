@@ -117,7 +117,7 @@ def handle_chat(message):
             if session['username'] in sessions[key].clients:
                 for i in sessions[key].clients:
                     socketio.emit('chatprint', message, room = sids[i])
-                    break
+                break
         time.sleep(3)
         for key in sessions:
             if session['username'] in sessions[key].clients:
@@ -128,14 +128,13 @@ def handle_chat(message):
         for key in sessions:
             print("key" + key)
             print ("session username, " +  session['username'])
-            #print("sessions[key], " + sessions[key])
             print(sessions[key].clients)
             for key in sessions:
                 if session['username'] in sessions[key].clients:
                     for i in sessions[key].clients:
                         print("sending to sid: " , sids[i])
                         socketio.emit('chatprint', message, room = sids[i])
-                        break
+                    break
 
 @socketio.on('changeword')
 def handle_word_change():

@@ -5,7 +5,7 @@ const ctx = canvas.getContext("2d");
 
 let drawing = false;
 let uid = null;
-socket.emit("syncSID", socket.id)
+socket.emit("syncSID")
 
 document.getElementById("chatinput").addEventListener("keyup", function(event) {
   if (event.key === "Enter") {
@@ -37,7 +37,7 @@ socket.on("refresh", function(){
 });
 
 setInterval(function() {
-  socket.emit("syncSID", socket.id, );
+  socket.emit("syncSID");
 }, 30000);
 
 socket.on('drawreceive', function(canvasReceived){
