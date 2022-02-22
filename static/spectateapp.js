@@ -16,7 +16,6 @@ document.getElementById("chatinput").addEventListener("keyup", function(event) {
 function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
   socket.emit('chatsubmit', chatinput.value);
   chatinput.value = '';
-  console.log("message");
 };
 
 socket.on('setDrawer', function(room_code) {
@@ -44,8 +43,4 @@ socket.on('drawreceive', function(canvasReceived){
   const receivedImage = new Image(1000,680);
   receivedImage.src = canvasReceived;
   ctx.drawImage(receivedImage, 0, 0);
-});
-
-socket.on("NewUID", function(username){
-  uid = username;
 });

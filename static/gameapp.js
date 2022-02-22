@@ -71,7 +71,6 @@ function changeWord() {
 
 socket.on('wordchanged', function(newword){
   todraw.innerHTML = ("Draw: " + newword)
-  console.log(socket.id);
 })
 
 socket.on("refresh", function(){

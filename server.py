@@ -11,7 +11,6 @@ import json
 import time
 import re
 
-newword = "Something"
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'fortnite'
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///./login.db'
@@ -110,40 +109,33 @@ def handle_drawing(args):
 
 @socketio.on('chatsubmit')
 def handle_chat(message):
-    print(message*100)
-    if message.upper() == newword.upper():
-        message = (session["username"] +  " Has Guessed The Word. The Word Was: " + newword)
-        for key in sessions:
+    for key in sessions:
             if session['username'] in sessions[key].clients:
-                for i in sessions[key].clients:
-                    socketio.emit('chatprint', message, room = sids[i])
+                goodkey = key
                 break
+    if message.upper() == sessions[goodkey].word.upper():
+        message = (session["username"] +  " Has Guessed The Word. The Word Was: " + sessions[goodkey].word)
+        for i in sessions[goodkey].clients:
+            socketio.emit('chatprint', message, room = sids[i])
         time.sleep(3)
-        for key in sessions:
-            if session['username'] in sessions[key].clients:
-                new_round(key)
-                break
+        if session['username'] in sessions[goodkey].clients:
+            new_round(goodkey)
     else:
         message = session['username'] + ":" + str(message)
-        for key in sessions:
-            print("key" + key)
-            print ("session username, " +  session['username'])
-            print(sessions[key].clients)
-            for key in sessions:
-                if session['username'] in sessions[key].clients:
-                    for i in sessions[key].clients:
-                        print("sending to sid: " , sids[i])
-                        socketio.emit('chatprint', message, room = sids[i])
-                    break
+        for i in sessions[goodkey].clients:
+            print("sending to sid: " , sids[i])
+            socketio.emit('chatprint', message, room = sids[i])
 
 @socketio.on('changeword')
 def handle_word_change():
     with open("words.json") as f:
         data = json.loads(f.read())
         randomint = random.randint(0,62)
-        global newword
-        newword = data['words'][randomint]
-        socketio.emit('wordchanged', newword)
+        for key in sessions:
+            if session["username"] in sessions[key].clients:
+                sessions[key].word = data['words'][randomint]
+                break
+        socketio.emit('wordchanged', sessions[key].word, room=sids[session["username"]])
 
 class Session():
     def __init__(self, roomcode) -> None:
