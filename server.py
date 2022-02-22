@@ -12,7 +12,7 @@ import time
 import re
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'fortnite'
+app.config['SECRET_KEY'] = 'HNz898OEWw3qdq8tpkeatPC8GqvExMdw'
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///./login.db'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 socketio = SocketIO(app,async_handlers=True)
