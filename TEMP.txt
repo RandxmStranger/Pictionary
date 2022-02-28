@@ -1,0 +1,31 @@
+
+SQL TO GET SCORES IN ASCENDING ORDER 
+
+	SELECT score.user_id, user.username, score.score
+	FROM score, user
+	WHERE (score.user_id == user.id) AND (score.score IS NOT NULL)
+	ORDER BY score.score
+
+############################################################################
+
+SQL TO WRITE SCORE TABLE
+
+CREATE TABLE "score" (
+	"score"	INTEGER,
+	"user_id"	INTEGER UNIQUE,
+	FOREIGN KEY("user_id") REFERENCES "user"("id"),
+	PRIMARY KEY("user_id")
+);
+
+############################################################################
+
+SQL TO WRITE USER TABLE 
+
+CREATE TABLE "user" (
+	"id"	INTEGER NOT NULL,
+	"username"	VARCHAR(14) UNIQUE,
+	"password"	VARCHAR(100) UNIQUE,
+	PRIMARY KEY("id")
+);
+
+############################################################################
