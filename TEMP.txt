@@ -1,10 +1,14 @@
 
-SQL TO GET SCORES IN ASCENDING ORDER 
+SQL TO JOIN TABLES AND GET SCORES IN DESCENDING ORDER 
 
 	SELECT score.user_id, user.username, score.score
-	FROM score, user
-	WHERE (score.user_id == user.id) AND (score.score IS NOT NULL)
-	ORDER BY score.score
+	FROM user
+	INNER JOIN score
+	ON user.id = score.user_id
+	WHERE score.score IS NOT NULL
+	ORDER BY score.score DESC
+
+
 
 ############################################################################
 
