@@ -56,10 +56,15 @@ def register():
 def register_post():
     username = request.form.get("username")
     password = request.form.get("password")
+
     if re.fullmatch(" *", password):
         flash("Please enter a password")
         return redirect("/register")
-
+    elif len(password) < 8:
+        flash("Your password has to be at least 8 characters long")
+        return redirect("/register")
+    elif 
+    
     user = User.query.filter_by(username=username).first()
 
     if user:
