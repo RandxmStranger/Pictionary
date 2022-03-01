@@ -199,9 +199,13 @@ def handle_joining(room_code):
 def handle_sids():
     sids[session["username"]] = request.sid
 
-@app.route("/leadeboard")
+@app.route("/leaderboard")
 def handle_leaderboards():
-    score = db.engine.execute("""
+    return render_template("leaderboard.html")
+
+@socketio.on("requestleader")
+def send_leader():
+    table = db.engine.execute("""
     SELECT score.user_id, user.username, score.score
     FROM user
     INNER JOIN score
@@ -209,7 +213,13 @@ def handle_leaderboards():
     WHERE score.score IS NOT NULL
     ORDER BY score.score DESC
     """)
-    return render_template("leaderboard.html", score)
+    score = []
+    for row in table:
+        newrow = [row[1],row[2]]
+        score.append(newrow)
+    print(score)
+
+    socketio.emit("sendleader", score, room = request.sid)
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)
