@@ -1,3 +1,4 @@
+from cgitb import reset
 from flask import Flask, render_template, request, flash, redirect, session
 from flask.globals import current_app, session
 from flask.helpers import url_for
@@ -63,8 +64,7 @@ def register_post():
     elif len(password) < 8:
         flash("Your password has to be at least 8 characters long")
         return redirect("/register")
-    elif 
-    
+        
     user = User.query.filter_by(username=username).first()
 
     if user:
@@ -198,6 +198,18 @@ def handle_joining(room_code):
 @socketio.on("syncSID")
 def handle_sids():
     sids[session["username"]] = request.sid
+
+@app.route("/leadeboard")
+def handle_leaderboards():
+    score = db.engine.execute("""
+    SELECT score.user_id, user.username, score.score
+    FROM user
+    INNER JOIN score
+    ON user.id = score.user_id
+    WHERE score.score IS NOT NULL
+    ORDER BY score.score DESC
+    """)
+    return render_template("leaderboard.html", score)
 
 if __name__ == "__main__":
     socketio.run(app, debug = True)
