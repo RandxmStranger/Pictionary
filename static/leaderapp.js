@@ -15,8 +15,7 @@ socket.on('sendleader', function(scores) {
         name.innerText = scores[i][1];
         score.innerText = scores[i][0];
         let scoreRow = document.createElement("div");
-        scoreRow.classList.add("row");
-        scoreRow.classList.add("epicclassno1")
+        scoreRow.classList.add("row","epicclassno1");
         scoreRow.appendChild(score);
         scoreRow.appendChild(name);
         leaderboard.appendChild(scoreRow);

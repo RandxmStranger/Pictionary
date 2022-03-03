@@ -1,17 +1,27 @@
 .epicclassno1 {
     flex-wrap: nowrap;
     left: 5px;
-    width: 100vw;
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: auto;
 }
 
 .epicclassno2 {
     width: 30vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .title {
     font-size: large;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: bold;
+}
+
+#updatediv {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
