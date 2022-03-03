@@ -1,42 +1,30 @@
-///const socket = io.connect('http://' + document.domain + ':' + location.port);
-///
-///socket.on('sendleader', function(score) {
-///    console.log("received scores")
-///    let leaderboard = document.getElementById("leaderboard");
-///    leaderboard.innerHTML = "";
-///
-///    for(row in score) {
-///        console.log(row)
-///        let name = document.createElement("div");
-///        let score = document.createElement("div");
-///        name.classList.add("name");
-///        score.classList.add("score");
-///        name.innerText = row[1];
-///        score.innerText = row[2];
-///
-///        let scoreRow = document.createElement("div");
-///        scoreRow.classList.add("row");
-///        scoreRow.appendChild(name);
-///        scoreRow.appendChild(score);
-///        leaderboard.appendChild(scoreRow);
-///  }});
-///s
-///socket.emit("requestleader")
+const socket = io.connect('http://' + document.domain + ':' + location.port);
 
-let scores = [['fortniteman', 69], ['2', 46], ['4', 43], ['1', 32], ['dustin', 7]]
+socket.on('sendleader', function(scores) {
+    let leaderboard = document.getElementById("leaderboard");
+    leaderboard.innerHTML = `<div id="title" class="row epicclassno1">
+    <div id="nametitle" class="title epicclassno2">Name</div>
+    <div id="scoretitle" class="title epicclassno2">Score</div>
+</div>`;
 
-for(let i=0; i < scores.length; i++) {
-    console.log(scores[i])
-    let name = document.createElement("div");
-    let score = document.createElement("div");
-    name.classList.add("name");
-    score.classList.add("score");
-    name.innerText = scores[i][1];
-    score.innerText = scores[i][0];
+    for(let i=0; i < scores.length; i++) {
+        let name = document.createElement("div");
+        let score = document.createElement("div");
+        name.classList.add("name", "epicclassno2");
+        score.classList.add("score", "epicclassno2");
+        name.innerText = scores[i][1];
+        score.innerText = scores[i][0];
+        let scoreRow = document.createElement("div");
+        scoreRow.classList.add("row");
+        scoreRow.classList.add("epicclassno1")
+        scoreRow.appendChild(score);
+        scoreRow.appendChild(name);
+        leaderboard.appendChild(scoreRow);
+    };
+});
 
-    let scoreRow = document.createElement("div");
-    scoreRow.classList.add("row");
-    scoreRow.appendChild(name);
-    scoreRow.appendChild(score);
-    leaderboard.appendChild(scoreRow);
+function updateLeaderboard(){
+    socket.emit("requestleader");
 };
+
+updateLeaderboard()
