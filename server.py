@@ -117,7 +117,8 @@ def handle_chat(message):
                 break
     if message.upper() == sessions[goodkey].word.upper():
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + sessions[goodkey].word)
-        scorerow= Score.query.filter_by(user_id = current_user.id).first()
+        scorerow = Score.query.filter_by(user_id = current_user.id).first()
+        print(scorerow)
         scorerow.score += 1
         db.session.commit()
         for i in sessions[goodkey].clients:
@@ -128,7 +129,6 @@ def handle_chat(message):
     else:
         message = session['username'] + ":" + str(message)
         for i in sessions[goodkey].clients:
-            print("sending to sid: " , sids[i])
             socketio.emit('chatprint', message, room = sids[i])
 
 @socketio.on('changeword')
@@ -182,8 +182,6 @@ def handle_joining(room_code):
 @app.route("/game/<r_code>")
 @login_required
 def gameconnect(r_code):
-    print(sessions[r_code].clients[sessions[r_code].drawer])
-    print(session['username'])
     if session['username'] == sessions[r_code].clients[sessions[r_code].drawer]:
          return render_template("game.html")
     else:
@@ -219,7 +217,6 @@ def send_leader():
     for row in table:
         newrow = [row[1],row[2]]
         score.append(newrow)
-    print(score)
 
     socketio.emit("sendleader", score, room = request.sid)
 

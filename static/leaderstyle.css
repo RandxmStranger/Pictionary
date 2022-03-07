@@ -25,3 +25,7 @@
     align-items: center;
     justify-content: center;
 }
+.table {
+    border-color: black;
+    border: 1px;
+}

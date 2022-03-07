@@ -86,7 +86,7 @@ function changecolor(color) {
 setInterval(function() {
   const newUrl = document.getElementById('drawcanvas').toDataURL();
   socket.emit("drawing", newUrl);
-}, 500);
+}, 1000);
 
 setInterval(function() {
   socket.emit("syncSID");

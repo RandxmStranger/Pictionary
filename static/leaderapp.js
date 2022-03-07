@@ -3,8 +3,8 @@ const socket = io.connect('http://' + document.domain + ':' + location.port);
 socket.on('sendleader', function(scores) {
     let leaderboard = document.getElementById("leaderboard");
     leaderboard.innerHTML = `<div id="title" class="row epicclassno1">
-    <div id="nametitle" class="title epicclassno2">Name</div>
-    <div id="scoretitle" class="title epicclassno2">Score</div>
+    <div id="nametitle" class="title epicclassno2 table">Name</div>
+    <div id="scoretitle" class="title epicclassno2 table">Score</div>
 </div>`;
 
     for(let i=0; i < scores.length; i++) {
