@@ -1,4 +1,3 @@
-from cgitb import reset
 from flask import Flask, render_template, request, flash, redirect, session
 from flask.globals import current_app, session
 from flask.helpers import url_for
