@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, flash, redirect, session
-from flask.globals import current_app, session
+from flask.globals import session
 from flask.helpers import url_for
-from flask_login.utils import _get_user, login_required
-from flask_socketio import SocketIO, join_room, leave_room, rooms
+from flask_login.utils import login_required
+from flask_socketio import SocketIO, join_room, leave_room
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -117,6 +117,9 @@ def handle_chat(message):
                 break
     if message.upper() == sessions[goodkey].word.upper():
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + sessions[goodkey].word)
+        scorerow= Score.query.filter_by(user_id = current_user.id).first()
+        scorerow.score += 1
+        db.session.commit()
         for i in sessions[goodkey].clients:
             socketio.emit('chatprint', message, room = sids[i])
         time.sleep(3)
