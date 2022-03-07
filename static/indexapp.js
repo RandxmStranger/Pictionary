@@ -18,3 +18,7 @@ function logout(){
 socket.on('redirect', function(data) {
     window.location = data.url;
 });
+
+function leaderboard(){
+    location.href = "/leaderboard"
+}
