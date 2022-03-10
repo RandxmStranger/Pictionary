@@ -1,8 +1,9 @@
+from enum import unique
 from flask import Flask, render_template, request, flash, redirect, session
 from flask.globals import session
 from flask.helpers import url_for
 from flask_login.utils import login_required
-from flask_socketio import SocketIO, join_room, leave_room
+from flask_socketio import SocketIO, join_room 
 from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -33,8 +34,8 @@ class User(UserMixin, db.Model):
 
 class Score(db.Model):
     __tablename__ = "score"
-    score = db.Column(db.Integer(), primary_key = True)
-    user_id = db.Column(db.ForeignKey("user.id"))
+    score = db.Column(db.Integer())
+    user_id = db.Column(db.ForeignKey("user.id"), primary_key = True, unique = True)
 
 @login_manager.user_loader
 def load_user(id):
@@ -71,7 +72,9 @@ def register_post():
         return redirect("/register")
     
     new_user = User(username=username, password=generate_password_hash(password, method=("sha256")))
+    new_score = Score(score=0)
     db.session.add(new_user)
+    db.session.add(new_score)
     db.session.commit()
 
     return redirect("/login")
@@ -91,6 +94,7 @@ def login_post():
         flash("Your username/password is incorrect")
         return redirect("/login")
     
+    session["id"] = user.id
     login_user(user)
 
     return redirect("/")
@@ -117,8 +121,7 @@ def handle_chat(message):
                 break
     if message.upper() == sessions[goodkey].word.upper():
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + sessions[goodkey].word)
-        scorerow = Score.query.filter_by(user_id = current_user.id).first()
-        print(scorerow)
+        scorerow = db.session.query(Score).filter_by(user_id = session["id"]).first()
         scorerow.score += 1
         db.session.commit()
         for i in sessions[goodkey].clients:
