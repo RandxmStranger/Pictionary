@@ -1,46 +1,35 @@
 const canvas = document.getElementById("drawcanvas");
 const socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.emit("syncSID") //This synchronises the socket id with the server so that the server can contact this user directly.
+socket.emit("changeword") //This emits a change word event so that the user can get a word to draw as fast as possible.
 const ctx = canvas.getContext("2d");
 const todraw = document.getElementById("title");
 ctx.canvas.width = 1000;
 ctx.canvas.height = 680;
-document.getElementById("title").innerHTML = ("Draw: " + word);
+document.getElementById("title").innerHTML = ("Draw: Something"); //Sets the default title to say draw: if the client hasnt yet received a word from the server
 const hex = document.getElementById("hex");
 const chatinput = document.getElementById("chatinput");
 
-let drawing = false;
 const pos = { x: 0, y: 0 };
 
-let uid = null;
-
-console.log(socket.id)
-socket.emit("syncSID")
-
-function setPosition(e) { //Gets mouse position relative to the canvas
+function setPosition(e) { //Gets mouse position relative to the canvas position
   const rect = canvas.getBoundingClientRect();
   pos.x = e.clientX - rect.left;
   pos.y = e.clientY - rect.top;
 };
 
-socket.emit("changeword")
-document.getElementById("chatinput").addEventListener("keyup", function(event) {
+document.getElementById("chatinput").addEventListener("keyup", function(event) { //This function lets the user send chat messages by pressing the enter button on their keyboard, without having to pres the send message button with their mouse.
   if (event.key === "Enter") {
     chatsubmit();
   };
 });
 
-function chatsubmit() { //Send the current text in the chat box to the server then clear the chat box
+function chatsubmit() { //This function reads the current text in the chat input field, if its empty the function doesnt run
   if (chatinput.value != ""){ 
-    socket.emit('chatsubmit', chatinput.value);
-    chatinput.value = '';
+    socket.emit('chatsubmit', chatinput.value); //This emits a chatsubmit socket event, along with the message that the user wrote.
+    chatinput.value = ''; //This empties the chat input field.
   }
-  console.log("message");
 };
-
-socket.on('setDrawer', function(room_code) {
-  location.reload();
-  socket.emit('newDrawer', room_code);
-});
 
 socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received
   console.log("incoming message");
@@ -51,47 +40,47 @@ socket.on('chatprint', function(message){ //When a message comes in, create a ne
   document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
 });
 
-function draw(e) {
-  if (e.buttons !== 1) return;
-  const color = document.getElementById("hex").value;
-  ctx.beginPath();
-  const width = document.getElementById("brush").value;
+function draw(e) { //This is the function used to enable drawing on the canvas by the user.
+  if (e.buttons !== 1) return; //If the mouse button isnt pressed, the function doesn't run.
+  const color = document.getElementById("hex").value; //This gets the value of the hex input field on the drawing page then sets the brush color to the color corresponding to the hex code.
+  ctx.beginPath(); //This begins a brush path at the current mouse position.
+  const width = document.getElementById("brush").value; //This gets the value of the width input field then sets the brush width to said value.
   ctx.lineWidth = width;
-  ctx.lineCap = "round";
+  ctx.lineCap = "round"; //This makes the brush circular
   ctx.strokeStyle = color;
-  ctx.moveTo(pos.x, pos.y);
-  setPosition(e);
-  ctx.lineTo(pos.x, pos.y);
-  ctx.stroke();
+  ctx.moveTo(pos.x, pos.y); //This moves the context variable to the current mouse position relative to the canvas.
+  setPosition(e); //This updates the mouse position relative to the canvas.
+  ctx.lineTo(pos.x, pos.y); //This makes a line from the position created by beginPath() 
+  ctx.stroke(); //This colors in the line created by lineTo()
 };
 
-function changeWord() {
+function changeWord() { //This function sends out a changeword socket event, which the server receives, chooses a random word then sends it back to the user with a word changed event
   socket.emit('changeword');
 };
 
-socket.on('wordchanged', function(newword){
+socket.on('wordchanged', function(newword){ //This function changes the word that appears on top of the drawer's screen that they have to draw whenever the server sends out a word changed event
   todraw.innerHTML = ("Draw: " + newword)
 })
 
-socket.on("refresh", function(){
+socket.on("refresh", function(){ //This function refreshes the page every time the server sends a refresh message.
   location.reload()
 })
 
-colors = { red: '#F00', green: '#0F0', blue: '#00F', yellow: '#FF0', orange: '#F80', purple: '#B0F', black: '#000', gray: '#333', gray2: '#666', white: '#FFF' };
+colors = { red: '#F00', green: '#0F0', blue: '#00F', yellow: '#FF0', orange: '#F80', purple: '#B0F', black: '#000', gray: '#333', gray2: '#666', white: '#FFF' }; //Dictionary of colors used to set the brush color so that a new function doesnt have to be written for each button and its color.
 
-function changecolor(color) {
+function changecolor(color) { //This function sets the color that the brush will be set to on click of the button given the color of the button.
   hex.value = colors[color];
 }
 
-setInterval(function() {
+setInterval(function() {   //This function emits a drawing socket message, along with a representation of the current canvas to the server every 0.5 seconds.
   const newUrl = document.getElementById('drawcanvas').toDataURL();
   socket.emit("drawing", newUrl);
-}, 100000);
+}, 500);
 
-setInterval(function() {
+setInterval(function() {  //This function emits a syncSID socket message to the server every 30 seconds. This technically isnt 100% necessary as every time a user joins a game or a new round starts, the sids are updated. This is only here as a precaution incase somehow the sids change.
   socket.emit("syncSID");
 }, 30000);
 
-document.addEventListener("mouseenter", setPosition);
+document.addEventListener("mouseenter", setPosition); //These event listeners are here so that the drawing works. Every time the cursor enters the area of the canvas, clicks or moves it updates its position.
 document.addEventListener("mousedown", setPosition);
 document.addEventListener("mousemove", draw);

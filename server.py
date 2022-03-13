@@ -17,8 +17,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///./database.db'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #This line makes the browser not cache any files, which is very useful for testing and also going to be kept like this as it allows for very easy deployment of any updates to the website.
 socketio = SocketIO(app,async_handlers=True)
 
-sessions = {}
-sids = {}
+sessions = {} #A dictionary of sessions, so that each room is easily accessible by its room code
+sids = {} #A dictionary of session ids, so that each user's session id is easily accessible with their username.
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -135,16 +135,16 @@ def handle_chat(message):
 
 @socketio.on('changeword') #This runs whenever a user pressed the new word button, which sends a "changeword" event.
 def handle_word_change():
-    with open("words.json") as f:
-        data = json.loads(f.read())
-        randomint = random.randint(0,62)
-        for key in sessions:
-            if session["username"] in sessions[key].clients:
+    with open("words.json") as f: #This opens the json file of all the possible words.
+        data = json.loads(f.read()) #This reads the json file and puts its contents into the data variable
+        randomint = random.randint(0,62) #This picks a random number between 0 and 62 (the number of words in the json), which will be used to decide which word to use
+        for key in sessions: #This iterates through all the sessions
+            if session["username"] in sessions[key].clients: #If the user who requested the word change is in the current session, the word becomes a random word chosen from the data variable.
                 sessions[key].word = data['words'][randomint]
-                break
-        socketio.emit('wordchanged', sessions[key].word, room=sids[session["username"]])
+                break #This breaks the loop so as to not needlessly iterate through all the sessions
+        socketio.emit('wordchanged', sessions[key].word, room=sids[session["username"]]) #This emits the new word to the user who requested it, which upon being received will be displayed at the top of their screen.
 
-class Session():
+class Session(): #This is a session (also known as a room) class, it stores a list of clients, the code for the room, the index of the current drawer, wether the game has started, and the current word.
     def __init__(self, roomcode) -> None:
         self.clients = []
         self.code = roomcode
@@ -152,44 +152,42 @@ class Session():
         self.started = False
         self.word = "Square"
 
-@socketio.on("newRound")
-def new_round(room_code):
-    current_room = sessions[room_code]
-    if (len(sessions[room_code].clients) == 1):
+@socketio.on("newRound") #This is called whenever a word is guessed or when a game starts
+def new_round(room_code): #The room code decides which room the new round is started in
+    current_room = sessions[room_code] #This just makes the room code easily accessible with a variable
+    if (len(sessions[room_code].clients) == 1): #If theres only one person in the room, then they become the drawer.
       current_room.drawer = 0
     else:
-      current_room.drawer += 1
-      current_room.drawer = current_room.drawer % len(current_room.clients)
+      current_room.drawer += 1 #Increment the drawer index by one.
+      current_room.drawer = current_room.drawer % len(current_room.clients) #This mods the drawer index with the amount of people in the room, so that the index cycles through each of the clients without going out of range.
       for i in current_room.clients:
-        socketio.emit('refresh', room = sids[i])
+        socketio.emit('refresh', room = sids[i]) #Sends a refresh socket event to each user in the room so that their pages are refreshed and they get the correct gui for their role (drawer/spectator)
 
-@socketio.on("join")
+@socketio.on("join") #This runs whenever someone joins a room
 def handle_joining(room_code):
-    if room_code in sessions:
-        join_room(room_code)
-        sessions[room_code].clients.append(session['username'])
-        sessions[room_code].started = True
-        sids[session['username']] = request.sid
-        print(request.sid)
-        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
+    if room_code in sessions: #If the room already exists, the following code runs
+        join_room(room_code) #Adds the user to the socketio room
+        sessions[room_code].clients.append(session['username']) #Adds the user to the clients list of the session
+        sessions[room_code].started = True #Marks the session as started
+        sids[session['username']] = request.sid #This saves the user's session id in the sids dictionary so its easy to find the sid using the username
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']]) #Redirects the user to the url for their current game
     else:
-        print("Creating room ", room_code)
-        sessions[room_code] = Session(room_code)
-        sessions[room_code].clients.append(session['username'])
-        join_room(room_code)
-        print(request.sid)
-        sids[session['username']] = request.sid
-        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']])
+        print("Creating room ", room_code) #If the room doesnt already exist, it creates a new room
+        sessions[room_code] = Session(room_code) #Create a new session and add it to the sessions dictionary so its easily accessible with its room code
+        sessions[room_code].clients.append(session['username']) #Adds the current user to the new room's clients list
+        join_room(room_code) #Adds the user to the socketio room
+        sids[session['username']] = request.sid #This saves the user's session id in the sids dictionary so its easy to find the sid using the username
+        socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']]) #Redirects the user to the url for their current game
 
-@app.route("/game/<r_code>")
-@login_required
+@app.route("/game/<r_code>") #The route for games, <r_code> makes it so that any room code can be used and it will still lead to this route
+@login_required #You need to be logged in to be in a game room
 def gameconnect(r_code):
-    if session['username'] == sessions[r_code].clients[sessions[r_code].drawer]:
+    if session['username'] == sessions[r_code].clients[sessions[r_code].drawer]: #If the client is a drawer in the current game, it sends them the game.html
          return render_template("game.html")
     else:
-        return render_template("spectate.html")
+        return render_template("spectate.html") #If a client is a spectator, it sends them the spectate.html
 
-@socketio.on("syncSID")
+@socketio.on("syncSID") #Whenever a client emits a syncsid event (Every 30 seconds) this gets rub
 def handle_sids():
     sids[session["username"]] = request.sid
 

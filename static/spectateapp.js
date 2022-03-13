@@ -3,8 +3,6 @@ const socket = io.connect('http://' + document.domain + ':' + location.port);
 const chatinput = document.getElementById("chatinput");
 const ctx = canvas.getContext("2d");
 
-let drawing = false;
-let uid = null;
 socket.emit("syncSID")
 
 document.getElementById("chatinput").addEventListener("keyup", function(event) {
