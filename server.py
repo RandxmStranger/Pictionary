@@ -187,17 +187,17 @@ def gameconnect(r_code):
     else:
         return render_template("spectate.html") #If a client is a spectator, it sends them the spectate.html
 
-@socketio.on("syncSID") #Whenever a client emits a syncsid event (Every 30 seconds) this gets rub
+@socketio.on("syncSID") #Whenever a client emits a syncsid event (Every 30 seconds) this gets run
 def handle_sids():
-    sids[session["username"]] = request.sid
+    sids[session["username"]] = request.sid #This saves the user's session id in the sids dictionary for easy access to their sid
 
-@app.route("/leaderboard")
+@app.route("/leaderboard") #This is the route that users will visit to see the leaderboards, they dont need to be logged in to view it as its not very important.
 def handle_leaderboards():
     return render_template("leaderboard.html")
 
-@socketio.on("requestleader")
-def send_leader():
-    table = db.engine.execute("""
+@socketio.on("requestleader") #Whenever a client requests a leaderboard update, this code is run.
+def send_leader(): #This SQL is meant to join the score table and the user table by their ids, then query the joined table for the username and score, in descending order so that the client doesn't have to sort it, so the load on the client is easier.
+    table = db.engine.execute(""" 
     SELECT score.user_id, user.username, score.score
     FROM user
     INNER JOIN score
@@ -206,11 +206,11 @@ def send_leader():
     ORDER BY score.score DESC
     """)
     score = []
-    for row in table:
-        newrow = [row[1],row[2]]
-        score.append(newrow)
+    for row in table: #This iterate through every row returned by the query
+        newrow = [row[1],row[2]] #This creates an array with each entry of a username along with their scores so that the score array can be emitted on the socket
+        score.append(newrow) #This adds the newrow array into the score 2d array so that its ready to be sent by the server
 
-    socketio.emit("sendleader", score, room = request.sid)
+    socketio.emit("sendleader", score, room = request.sid) #This emits the score array to the user who requested it.
 
 if __name__ == "__main__":
-    socketio.run(app, debug = True, host="0.0.0.0", port=5000)
+    socketio.run(app, debug = True, host="0.0.0.0", port=5000) #This runs the flask server to enable clients to connect to it.
