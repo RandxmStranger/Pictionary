@@ -1,5 +1,5 @@
 const canvas = document.getElementById("drawcanvas");
-const socket = io.connect('http://' + document.domain + ':' + location.port);
+const socket = io.connect('http://' + document.domain + ':' + location.port); //This creates a socket connection with the flask server
 socket.emit("syncSID") //This synchronises the socket id with the server so that the server can contact this user directly.
 socket.emit("changeword") //This emits a change word event so that the user can get a word to draw as fast as possible.
 const ctx = canvas.getContext("2d");
@@ -32,12 +32,11 @@ function chatsubmit() { //This function reads the current text in the chat input
 };
 
 socket.on('chatprint', function(message){ //When a message comes in, create a new list element then populate it with the message received
-  console.log("incoming message");
-  const node = document.createElement("li");
-  const textnode = document.createTextNode(message);
-  node.appendChild(textnode);
-  document.getElementById("chat").appendChild(node);
-  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight;
+  const node = document.createElement("li"); //Creates a list element
+  const textnode = document.createTextNode(message); //Creates a text node and populates it with the message
+  node.appendChild(textnode); //adds the text node to the list element
+  document.getElementById("chat").appendChild(node); //Adds the list element to the chat, which is an unordered list.
+  document.getElementById("chat").scrollTop = document.getElementById("chat").scrollHeight; //Lets the chat box be scrolled properly whenever a message is added to it
 });
 
 function draw(e) { //This is the function used to enable drawing on the canvas by the user.

@@ -34,7 +34,18 @@ class User(UserMixin, db.Model): #This class is an sqlalechemy class, which enab
 class Score(db.Model):
     __tablename__ = "score"
     score = db.Column(db.Integer())
-    user_id = db.Column(db.ForeignKey("user.id"), primary_key = True, unique = True)
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), primary_key = True, unique = True)
+
+class Game(db.Model):
+    __tablename__ = "game"
+    game_id = db.Column(db.Integer(), primary_key = True, unique = True)
+
+class LinkingTable(db.Model):
+    __tablename__ = "link"
+    link_id = db.Column(db.Integer(), primary_key = True, unique = True)
+    game_id = db.Column(db.Integer(), db.ForeignKey("game.id"))
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
+    score = db.Column(db.Integer())
 
 @login_manager.user_loader #This is the user loader, flask-login uses this to find the correct user to login when login is called.
 def load_user(id):
