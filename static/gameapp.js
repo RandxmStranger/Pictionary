@@ -74,7 +74,7 @@ function changecolor(color) { //This function sets the color that the brush will
 setInterval(function() {   //This function emits a drawing socket message, along with a representation of the current canvas to the server every 0.5 seconds.
   const newUrl = document.getElementById('drawcanvas').toDataURL();
   socket.emit("drawing", newUrl);
-}, 500);
+}, 250);
 
 setInterval(function() {  //This function emits a syncSID socket message to the server every 30 seconds. This technically isnt 100% necessary as every time a user joins a game or a new round starts, the sids are updated. This is only here as a precaution incase somehow the sids change.
   socket.emit("syncSID");

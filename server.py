@@ -11,41 +11,45 @@ import json
 import time
 import re
 
+db = SQLAlchemy()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'HNz898OEWw3qdq8tpkeatPC8GqvExMdw'
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///./database.db'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 #This line makes the browser not cache any files, which is very useful for testing and also going to be kept like this as it allows for very easy deployment of any updates to the website.
 socketio = SocketIO(app,async_handlers=True)
+db.init_app(app)
 
 sessions = {} #A dictionary of sessions, so that each room is easily accessible by its room code
 sids = {} #A dictionary of session ids, so that each user's session id is easily accessible with their username.
 
-db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "/login"
 
-class User(UserMixin, db.Model): #This class is an sqlalechemy class, which enables easy use of sql databases without having to write queries. Even though this could be used to create tables, sql was manually executed for table creation.
-    __tablename__ = "user"
+class User(UserMixin, db.Model): #This class is an sqlalechemy class, which creates the User SQL table. UserMixin is a flask_login object that lets the user table be used to login users.
+    __tablename__ = "user" #This sets the name of the table to user
     id = db.Column(db.Integer, primary_key = True) #The primary key for a user. This variable has to be called id for flask-login to work properly
     username = db.Column(db.String(14)) #The username of a user. This cannot be longer than 14 characters for storage space purposes.
     password = db.Column(db.String(100)) #A user's password. This is going to be encrypted with sha256 for security.
+    score = db.Column(db.Integer) #This will be the total score that the user has acquired over their account lifetime.
+    games = db.relationship("LinkingTable", back_populates="user") #This creates a relationship object between the user and the linking table, which will be used to create a many to many relationship between games and users.
 
-class Score(db.Model):
-    __tablename__ = "score"
-    score = db.Column(db.Integer())
-    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"), primary_key = True, unique = True)
+class Game(db.Model):  #This class is an SQLAlchemy class, which creates an SQL table called Game.
+    __tablename__ = "game" #This line just sets the name of the table
+    game_id = db.Column(db.Integer(), primary_key = True, unique = True) #This is the primary key of the table, every game will have an integer id used to identify it in the database.
+    game_code = db.Column(db.String) #This game code will be the room code that users use to connect to the room. Storing it with the game id makes it easy to query the databse with the room code.
+    users = db.relationship("LinkingTable", back_populates="game") #This creates a relationship object to the linking table, which then links the game to the users in a many to many relationship.
 
-class Game(db.Model):
-    __tablename__ = "game"
-    game_id = db.Column(db.Integer(), primary_key = True, unique = True)
+class LinkingTable(db.Model): #This is an SQLAlchemy class that creates an SQL table called Linking Table.
+    __tablename__ = "link" #This sets the name of the table to "link"
+    link_id = db.Column(db.Integer(), primary_key = True, unique = True) #This is the primary key of the table, every link between game and user will have na integer id to make it easy to identify.
+    game_id = db.Column(db.Integer(), db.ForeignKey("game.game_id")) #This foreign key will match a game id in the game table, and will be used along with the user id to create a many to many link between the user and the game. 
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id")) #This foreign key will match a user id in the user table, and will be used along with the game id to create a many to many relationship between user and game
+    score = db.Column(db.Integer()) #This stores a users score for the specifiedd game. This is different to the score that is stored in the User table, which is a total of all the score that user has gotten.
+    user = db.relationship("User", back_populates="games") #This creates a relationship between the link table and user table, back_poulates tells the database that the relationship will be used to link the user to a game.
+    game = db.relationship("Game", back_populates="users") #This createsa  relationship between the link table and game table, the back_populates parameter tells the database that the game will be linked to a user.
 
-class LinkingTable(db.Model):
-    __tablename__ = "link"
-    link_id = db.Column(db.Integer(), primary_key = True, unique = True)
-    game_id = db.Column(db.Integer(), db.ForeignKey("game.id"))
-    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
-    score = db.Column(db.Integer())
+db.create_all(app=app) #This line creates the database, using the Flask app object.
 
 @login_manager.user_loader #This is the user loader, flask-login uses this to find the correct user to login when login is called.
 def load_user(id):
@@ -55,7 +59,7 @@ def load_user(id):
 @login_required #This makes it so this page is inaccessible unless a user is logged in with flask-login.
 def connect():
     user = User.query.filter_by(username=current_user.username).first() #The user database is queried using the current username, then the user with that username is returned to this variable.
-    db.session.commit()
+    db.session.commit() #This saves all the pending changes to the SQL database.
     session['username'] = current_user.username #The session object is a cookie that stores various data about the user and can be easily accessed by the server. Here, the username is stored in the session cookie.
     return render_template("index.html", username = user.username) #This sends the client the index html page, with the username. The username is added to the page with jinja.
 
@@ -81,10 +85,8 @@ def register_post():
         flash("That Username Is Taken")
         return redirect("/register")
     
-    new_user = User(username=username, password=generate_password_hash(password, method=("sha256"))) #This creates a new user object, with the entered username and the password encrypted with sha256.
-    new_score = Score(score=0) #This creates a new score object that is linked to the user.
+    new_user = User(username=username, password=generate_password_hash(password, method=("sha256")),score=0) #This creates a new user object, with the entered username and the password encrypted with sha256. It also adds a score to the user and sets it to 0.
     db.session.add(new_user) #This makes a new entry in the user table using the new_user object to populate it.
-    db.session.add(new_score) #This makes a new entry in the score table, using the new_score object to populate it.
     db.session.commit() #This commits the sql session.
 
     return redirect("/login") #Once a user has finished logging in, they are redirected to the login page to login.
@@ -131,8 +133,11 @@ def handle_chat(message):
                 break
     if message.upper() == sessions[goodkey].word.upper(): #This checks if the message that has been sent is the word that is the current word that is meant to be guessed.
         message = (session["username"] +  " Has Guessed The Word. The Word Was: " + sessions[goodkey].word) #If this is the case, a chat message is sent telling the other players who guessed the word and what it was.
-        scorerow = db.session.query(Score).filter_by(user_id = session["id"]).first() #The score table is queried using the user id, then the row corresponding to the current user is returned to the variable.
-        scorerow.score += 1 #The user's score is incremented by one
+        userrow = db.session.query(User).filter_by(id = session["id"]).first() #The user table is queried using the user id, then the row corresponding to the current user is returned to the variable.
+        userrow.score += 1 #The user's score is incremented by one
+        gamerow = db.session.query(Game).filter_by(game_code = goodkey).first() #The game table is queried using the game code, then the row corresponding to the room with that room code is returned to the variable. This will allow the game id to be read from the variable.
+        assocrow = db.session.query(LinkingTable).filter_by(user_id = session["id"], game_id = gamerow.game_id).first() #This queries the LinkingTable table by the user id and game id, then returns the link between the game and the user to the variable. This lets the user's game score be incremented.
+        assocrow.score += 1 #The user's game score is incremented by one
         db.session.commit() #The changes are then commited to the database
         for i in sessions[goodkey].clients: #This iterates through all the users in the current session
             socketio.emit('chatprint', message, room = sids[i]) #This sends the chat message to every user in the session
@@ -148,7 +153,7 @@ def handle_chat(message):
 def handle_word_change():
     with open("words.json") as f: #This opens the json file of all the possible words.
         data = json.loads(f.read()) #This reads the json file and puts its contents into the data variable
-        randomint = random.randint(0,62) #This picks a random number between 0 and 62 (the number of words in the json), which will be used to decide which word to use
+        randomint = random.randint(0,66) #This picks a random number between 0 and 62 (the number of words in the json), which will be used to decide which word to use
         for key in sessions: #This iterates through all the sessions
             if session["username"] in sessions[key].clients: #If the user who requested the word change is in the current session, the word becomes a random word chosen from the data variable.
                 sessions[key].word = data['words'][randomint]
@@ -178,12 +183,23 @@ def new_round(room_code): #The room code decides which room the new round is sta
 def handle_joining(room_code):
     if room_code in sessions: #If the room already exists, the following code runs
         join_room(room_code) #Adds the user to the socketio room
+        gamerow = db.session.query(Game).filter_by(game_code = room_code).first() #When a user joins a room, the Game table is queried using the room code to find the room row with that room code.
+        newassoc = LinkingTable(user_id = session["id"],score=0,game_id = gamerow.game_id) #This creates a new entry in the linking table, with the current user id, the current game id and the users score, which is currently 0.
+        db.session.add(newassoc) #This adds the new entry to the database
+        db.session.commit() #This commits the pending changes to the database.
         sessions[room_code].clients.append(session['username']) #Adds the user to the clients list of the session
         sessions[room_code].started = True #Marks the session as started
         sids[session['username']] = request.sid #This saves the user's session id in the sids dictionary so its easy to find the sid using the username
         socketio.emit('redirect', {'url': url_for('.gameconnect',r_code=room_code)}, room = sids[session['username']]) #Redirects the user to the url for their current game
     else:
         print("Creating room ", room_code) #If the room doesnt already exist, it creates a new room
+        newgamerow = Game(game_code = room_code) #This creates a new entry in the Game table with the room code specified by the user.
+        db.session.add(newgamerow) #This adds the new game entry to the database.
+        db.session.commit() #This commits all the pending changes to the database.
+        gamerow = db.session.query(Game).filter_by(game_code = room_code).first() #This queries the game table with the room code to find the game id.
+        newassoc = LinkingTable(user_id = session["id"],score=0,game_id = gamerow.game_id) #This creates a new entry in the linking table with the game id and user id, as well as a score for the game, which is set to 0.
+        db.session.add(newassoc) #This adds the entry to the database
+        db.session.commit() #This commits all pending changes to the database.
         sessions[room_code] = Session(room_code) #Create a new session and add it to the sessions dictionary so its easily accessible with its room code
         sessions[room_code].clients.append(session['username']) #Adds the current user to the new room's clients list
         join_room(room_code) #Adds the user to the socketio room
@@ -207,18 +223,16 @@ def handle_leaderboards():
     return render_template("leaderboard.html")
 
 @socketio.on("requestleader") #Whenever a client requests a leaderboard update, this code is run.
-def send_leader(): #This SQL is meant to join the score table and the user table by their ids, then query the joined table for the username and score, in descending order so that the client doesn't have to sort it, so the load on the client is easier.
+def send_leader(): #This SQL queries the User table, and returns all of the usernames and their corresponding scores, in descending order so that the client doesn't have to sort it. This is an example of thin-client computing.
     table = db.engine.execute(""" 
-    SELECT score.user_id, user.username, score.score
+    SELECT user.username, user.score
     FROM user
-    INNER JOIN score
-    ON user.id = score.user_id
-    WHERE score.score IS NOT NULL
-    ORDER BY score.score DESC
+    WHERE user.score IS NOT NULL
+    ORDER BY user.score DESC
     """)
     score = []
     for row in table: #This iterate through every row returned by the query
-        newrow = [row[1],row[2]] #This creates an array with each entry of a username along with their scores so that the score array can be emitted on the socket
+        newrow = [row[0],row[1]] #This creates an array with each entry of a username along with their scores so that the score array can be emitted on the socket
         score.append(newrow) #This adds the newrow array into the score 2d array so that its ready to be sent by the server
 
     socketio.emit("sendleader", score, room = request.sid) #This emits the score array to the user who requested it.

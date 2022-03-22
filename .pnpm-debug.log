@@ -1,0 +1,14 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 error pnpm": {
+    "code": "ERR_PNPM_NO_IMPORTER_MANIFEST_FOUND",
+    "err": {
+      "name": "Error",
+      "message": "No package.json (or package.yaml, or package.json5) was found in \"C:\\Users\\Dustin\\Pictionary\".",
+      "code": "ERR_PNPM_NO_IMPORTER_MANIFEST_FOUND",
+      "stack": "Error: No package.json (or package.yaml, or package.json5) was found in \"C:\\Users\\Dustin\\Pictionary\".\n    at readProjectManifest (C:\\Users\\Dustin\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:45209:13)\n    at async Object.readProjectManifestOnly (C:\\Users\\Dustin\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:45213:26)\n    at async C:\\Users\\Dustin\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:118244:26\n    at async Promise.all (index 0)\n    at async Object.default_1 [as default] (C:\\Users\\Dustin\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:118235:20)\n    at async Timeout._onTimeout (C:\\Users\\Dustin\\AppData\\Roaming\\npm\\node_modules\\pnpm\\dist\\pnpm.cjs:124690:24)"
+    }
+  }
+}
