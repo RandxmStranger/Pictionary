@@ -65,7 +65,7 @@ socket.on("refresh", function(){ //This function refreshes the page every time t
   location.reload()
 })
 
-colors = { red: '#F00', green: '#0F0', blue: '#00F', yellow: '#FF0', orange: '#F80', purple: '#B0F', black: '#000', gray: '#333', gray2: '#666', white: '#FFF' }; //Dictionary of colors used to set the brush color so that a new function doesnt have to be written for each button and its color.
+colors = { red: '#F00', green: '#0F0', blue: '#00F', yellow: '#FF0', orange: '#F80', purple: '#B0F', lightblue:'#0FF', black: '#000', white: '#FFF' }; //Dictionary of colors used to set the brush color so that a new function doesnt have to be written for each button and its color.
 
 function changecolor(color) { //This function sets the color that the brush will be set to on click of the button given the color of the button.
   hex.value = colors[color];

@@ -11,17 +11,25 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
-
-    <input id ="chatinput" placeholder="Message" type="text"></input>
-    <canvas id = "spectatecanvas" width="1000" height="680"></canvas>
-    <p id="title"></p>
-    
-    <ul id="chat">
-        <li>Chat Messages Will Appear Here</li>
-    </ul>
-
-    <button id="chatsubmit" type="button" onclick="chatsubmit()">Send</button>
-
+    <h1 id="title" class="display-1" style="text-align: center; color: #3354AA;">Guess The Word!</h1>
+    <div class="container" style="width: 100vw; margin: 0; display: fixed;">
+        <div class="row" style="width: 100vw; align-content: center;">
+            <div class="col" style="margin: 5px; width: 10vw; max-width: 145px; max-height: 240px; flex-direction: column; align-content: center; padding: 12px;">
+            </div>
+            <div class="col" style="margin: 0;">
+                <canvas id="spectatecanvas"></canvas>
+            </div>
+            <div class="col" style="margin: 5px;">
+                <ul id="chat">
+                    <li style="text-align: center; font-weight: bold;">Chat Messages Will Appear Here</li>
+                </ul>
+                <div class="row" style="margin-left: 0px; margin-top: 5px;">
+                    <input id ="chatinput" placeholder="Message" type="text" class="form-control" style="background-color: #C4C4C4; color: #000;"></input>
+                    <button id="chatsubmit" type="button" onclick="chatsubmit()" class="btn" style="padding: 0; margin: 0; background-color: #3354AA; margin-left: 5px; ">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src= "/static/spectateapp.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </html>

@@ -11,16 +11,23 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
-    
-    <div id="leaderboard" class="container" style="align-content: center;">
-        <div id="title" class="row epicclassno1">
-            <div id="nametitle" class="title epicclassno2 table">Name</div>
-            <div id="scoretitle" class="title epicclassno2 table">Score</div>
+    <body style="background-color: #DDD;">
+        <div class = "container" style="align-content: center;">
+            <h1 style="text-align: center; color: #3354AA;" class="display-1">Leaderboard</h1>
         </div>
-    </div>
-    <div id="updatediv">
-        <button id="update" type="button" onclick="updateLeaderboard()">Refresh Leaderboard</button>
-    </div>
-    <script src= "/static/leaderapp.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <div id="leaderboard" class="container" style="align-content: center; background-color: #C4C4C4; width: 60%;">
+            <div id="title" class="row epicclassno1">
+                <div id="nametitle" class="title epicclassno2 table" style="font-family: var(--bs-body-font-family);">Name</div>
+                <div id="scoretitle" class="title epicclassno2 table">Score</div>
+            </div>
+        </div>
+        <div class="centerdiv">
+            <button id="update" type="button" onclick="updateLeaderboard()" style="background-color: #3354AA; color: #FFF; font-family: var(--bs-body-font-family); margin: 10px;" class="btn">Refresh Leaderboard</button>
+        </div>
+        <div class="centerdiv">
+            <button id="update" type="button" onclick="goBack()" style="background-color: #3354AA; color: #FFF; font-family: var(--bs-body-font-family);" class="btn">Back To Home</button>
+        </div>
+        <script src= "/static/leaderapp.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    </body> 
 </html>

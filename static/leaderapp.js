@@ -26,4 +26,8 @@ function updateLeaderboard(){ //This function is run to request an updated leade
     socket.emit("requestleader");
 };
 
+function goBack(){ //This function takes the user to the index route when they press the leaderboard button on the page
+    location.href = "/"
+}
+
 updateLeaderboard() //This is called to request an updated leaderboard from the server. Without this the user would manually have to press the update leaderboard button to get a leaderboard.

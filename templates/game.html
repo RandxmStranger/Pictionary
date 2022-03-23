@@ -11,31 +11,39 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
-    
-    <input id="hex" placeholder="Enter Hex Code"></input>
-    <input id="brush" placeholder="Brush Width" type="number" min="1" max="100"></input>
-    <input id ="chatinput" placeholder="Message" type="text"></input>
-    <canvas id="drawcanvas"></canvas>
-    <p id="title"></p>
-    
-    <ul id="chat">
-        <li>Chat Messages Will Appear Here</li>
-    </ul>
-
-    <button id="chatsubmit" type="button" onclick="chatsubmit()" class="btn-primary">Send</button>
-    <button id="red" type="button" onclick="changecolor('red')" class="btn-primary" >Red</button>
-    <button id="green" type="button" onclick="changecolor('green')" class="btn-primary" >Green</button>
-    <button id="blue" type="button" onclick="changecolor('blue')" class="btn-primary" >Blue</button>
-    <button id="yellow" type="button" onclick="changecolor('yellow')" class="btn-primary" >Yellow</button>
-    <button id="orange" type="button" onclick="changecolor('orange')" class="btn-primary" >Orange</button>
-    <button id="purple" type="button" onclick="changecolor('purple')" class="btn-primary" >Purple</button>
-    <button id="black" type="button" onclick="changecolor('black')" class="btn-primary" >Black</button>
-    <button id="gray" type="button" onclick="changecolor('gray')" class="btn-primary" >Gray</button>
-    <button id="gray2" type="button" onclick="changecolor('gray2')" class="btn-primary" >Light Gray</button>
-    <button id="white" type="button" onclick="changecolor('white')" class="btn-primary" >White</button>
-    
-    <button id = "word" type="button" onclick="changeWord()">New Word</button>
-    
+    <h1 id="title" class="display-1" style="text-align: center; color: #3354AA;"></h1>
+    <div class="container" style="width: 100vw; margin: 0; display: fixed;">
+        <div class="row" style="width: 100vw; align-content: center;">
+            <div class="col" style="margin: 5px; width: 10vw; max-width: 145px; max-height: 240px; flex-direction: column; align-content: center; padding: 12px;">
+                <input id="hex" placeholder="Enter Hex Code"></input>
+                <input id="brush" placeholder="Brush Width" type="number" min="1" max="100"></input>
+                <div class="col" style="align-content: center; width: 100%; flex-direction: column; align-items: center; margin-left: 4px;">
+                    <button id="red" type="button" onclick="changecolor('red')" class="btn colorButton" style="background-color: #F00; width: 25px;"></button>
+                    <button id="green" type="button" onclick="changecolor('green')" class="btn colorButton" style="background-color: #0F0; width: 25px;"></button>
+                    <button id="blue" type="button" onclick="changecolor('blue')" class="btn colorButton" style="background-color: #00F; width: 25px;"></button>
+                    <button id="yellow" type="button" onclick="changecolor('yellow')" class="btn colorButton" style="background-color: #FF0; width: 25px;"></button>
+                    <button id="orange" type="button" onclick="changecolor('orange')" class="btn colorButton" style="background-color: #F80; width: 25px;"></button>
+                    <button id="purple" type="button" onclick="changecolor('purple')" class="btn colorButton" style="background-color: #F0F; width: 25px;"></button>
+                    <button id="lightblue" type="button" onclick="changecolor('lightblue')" class="btn colorButton" style="background-color: #0FF; width: 25px; height: 25px;"></button>
+                    <button id="black" type="button" onclick="changecolor('black')" class="btn colorButton" style="background-color: #000; width: 25px;"></button>
+                    <button id="white" type="button" onclick="changecolor('white')" class="btn colorButton" style="background-color: #FFF; width: 25px;"></button>
+                </div>
+                <button id = "word" type="button" onclick="changeWord()" class="btn" style="background-color: #3354AA; height: 30px; width: 120px; padding: 0;">New Word</button>
+            </div>
+            <div class="col" style="margin: 0;">
+                <canvas id="drawcanvas"></canvas>
+            </div>
+            <div class="col" style="margin: 5px;">
+                <ul id="chat">
+                    <li style="text-align: center; font-weight: bold;">Chat Messages Will Appear Here</li>
+                </ul>
+                <div class="row" style="margin-left: 0px; margin-top: 5px;">
+                    <input id ="chatinput" placeholder="Message" type="text" class="form-control" style="background-color: #C4C4C4; color: #000;"></input>
+                    <button id="chatsubmit" type="button" onclick="chatsubmit()" class="btn" style="padding: 0; margin: 0; background-color: #3354AA; margin-left: 5px; ">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src= "/static/gameapp.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </html>

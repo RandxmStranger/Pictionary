@@ -1,153 +1,49 @@
 #hex {
-    position: fixed;
-    left:5px;
-    top:2px;
-    width: 115px;
+    width: 120px;
 }
 #brush {
-    position: fixed;
-    left:120px;
-    top:2px;
-    width: 115px;
-}
-#red {
-    position: fixed;
-    left:5px;
-    top:40px;
-    border-color: #333;
-    background-color: #FF0000;
-}
-#green {
-    position: fixed;
-    left:5px;
-    top:80px;
-    border-color: #333;
-    background-color: #00FF00;
-}
-#blue {
-    position: fixed;
-    left:5px;
-    top:120px;
-    border-color: #333;
-    background-color: #0000FF;
-    color: white;
-}
-#yellow {
-    position: fixed;
-    left:5px;
-    top:160px;
-    border-color: #333;
-    background-color: #FFFF00;
-}
-#orange {
-    position: fixed;
-    left:5px;
-    top:200px;
-    border-color: #333;
-    background-color: #FF8800;
-    color: white;
-}
-#purple {
-    position: fixed;
-    left:5px;
-    top:240px;
-    border-color: #333;
-    background-color: #BB00FF;
-    color: white;
-}
-#black {
-    position: fixed;
-    left:5px;
-    top:280px;
-    border-color: #333;
-    background-color: black;
-    color: white;
-}
-#gray {
-    position: fixed;
-    left:5px;
-    top:320px;
-    border-color: #333;
-    background-color: #333;
-    color: white;
-}
-#gray2 {
-    position: fixed;
-    left:5px;
-    top:360px;
-    border-color: #333;
-    background-color: #666;
-    color: black;
-}
-#white {
-    position: fixed;
-    left:5px;
-    top:400px;
-    border-color: #333;
-    background-color: white;
-    color: black;
+    width: 120px;
 }
 body {
-    background-color: grey;
+    background-color: #DDD;
 }
 #drawcanvas {
     display:block;
-    background-color: white;
     width: 1000px;
     height: 680px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 60px;
+    background-color: white;
 }
 #title {
     display: block;
-    position: fixed;
-    top: 10px;
-    margin-left: 540px;
-    font-family: "Comic Sans MS Bold" , "Comic Sans", cursive;
-    font-size: 19pt;
+    font-size: 23pt;
     font-weight: bolder;
-    background-color: white;
-
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 #chatinput {
-    display: block;
-    position: fixed;
-    margin-left: auto;
-    margin-top: auto;
-    right: 70px;
-    bottom: 15px;
-    width: 180px;
+    width: 205px;
 }
 #chat {
-    display: block;
-    position: fixed;
-    right: 20px;
-    bottom: 25px;
-    width: 225px;
+    width: 300px;
     height: 600px;
     list-style: none;
-    background-color: white;
-    padding-left: 5px;
+    background-color: #C4C4C4;
     text-align: left;
     overflow-wrap: break-word;
     overflow-y: auto;
+    margin: 0;
+    padding: 5px;
 }
 #chatsubmit {
-    position: fixed;
-    right:20px;
-    bottom: 15px;
-    background-color: white;
+    background-color: #C4C4C4;
     color: black;
+    width: 90px;
+    height: 38px;
 }
 #word {
-    position: fixed;
-    left:20px;
-    bottom:15px;
-    background-color: white;
     color: black;   
 }
 .colorButton {
-    position: fixed;
-    left: 5px;
+    height: 25px;
+    width: 20px;
+    margin: 4px;
   }
