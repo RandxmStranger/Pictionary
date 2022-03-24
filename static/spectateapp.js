@@ -2,6 +2,8 @@ const canvas = document.getElementById("spectatecanvas");
 const socket = io.connect('http://' + document.domain + ':' + location.port); //This creates a socket connection with the flask server
 const chatinput = document.getElementById("chatinput");
 const ctx = canvas.getContext("2d");
+ctx.canvas.width = 1000;
+ctx.canvas.height = 680;
 
 socket.emit("syncSID") //This synchronises the socket id with the server so that the server can contact this user directly.
 

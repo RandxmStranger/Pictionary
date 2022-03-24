@@ -16,9 +16,9 @@
                 <div class="container">
                     <div class="d-flex justify-content-center">
                         <div class="row g-2">
-                            <div class="col">
+                            <div class="col-">
                                 <div class="row justify-content-center">
-                                    <h1 class="display-1" style="color: #3455AA; text-align: center;">Register</h1>
+                                    <h1 class="display-1" style="text-align: center; color: #3455AA;">Register</h1>
                                 </div>
                                 {% with alert = get_flashed_messages() %}
                                 {% if alert %}
@@ -26,15 +26,15 @@
                                 {% endif %}
                                 {% endwith %}
                             </div>
-                            <div class="col-lg">
+                            <div class="col-lg-">
                                 <input type="text" name="username" placeholder="Username" class="form-control" style="background-color: #C4C4C4">
                             </div>
-                            <div class="col-lg">
+                            <div class="col-lg-">
                                 <input type="password" name="password" placeholder="Password" class="form-control" style="background-color:  #C4C4C4;">
                             </div>
-                            <div class="col">
+                            <div class="col-">
                                 <div class="row justify-content-center">
-                                    <button class="btn btn-primary" style="width:25%; background-color: #3455AA">Register</button>
+                                    <button class="btn btn-primary" style="width: 10vw; background-color: #3455AA">Register</button>
                                 </div>
                             </div>
                         </div>
