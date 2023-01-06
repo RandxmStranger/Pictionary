@@ -15,6 +15,10 @@ function logout(){ //This function takes the user to the logout route when they 
     location.href = "/logout"
 }
 
+function forum(){ //This function takes the user to the forum route when they press the forum button on the page
+    location.href = "/forum"
+}
+
 socket.on('redirect', function(data) { //This function redirects the user to the address specified by the event, the server will send the request to redirect along with the address to redirect to any time it needs the user to be redirected
     window.location = data.url;
 });

@@ -237,5 +237,14 @@ def send_leader(): #This SQL queries the User table, and returns all of the user
 
     socketio.emit("sendleader", score, room = request.sid) #This emits the score array to the user who requested it.
 
+@app.route("/forum")
+@login_required
+def handle_forum():
+    return render_template("forum.html", username = session["username"])
+
+"""need to add functionality to retrieve titles and links to all forum posts, handle making new posts, searching for posts, deleting, making admin functionality,
+voting on posts, adding comments, editing posts, """
+
+
 if __name__ == "__main__":
     socketio.run(app, debug = True, host="0.0.0.0", port=5000) #This runs the flask server to enable clients to connect to it.
