@@ -11,7 +11,7 @@
         </title>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     </head>
-    <body>
+    <body onload="requestforum()">
         <nav class="navbar">
             <div class="col">
                 <h1 class="display-6" style="margin-left: 3vw;">Paint + Guess Forum</h1>
@@ -34,40 +34,8 @@
                                 <th scope="col">Score</th>
                             </tr>
                         </thead>
-                        <tbody class="tbody">
-                            <tr>
-                                <td>
-                                    <h3 class="display-6"><a href="#">Post Title</a></h3>
-                                </td>
-                                <td>
-                                    <p>Author</p>
-                                </td>
-                                <td>
-                                    <p>Score</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h3 class="display-6"><a href="#">Post Title</a></h3>
-                                </td>
-                                <td>
-                                    <p>Author</p>
-                                </td>
-                                <td>
-                                    <p>Score</p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <h3 class="display-6"><a href="#">Post Title</a></h3>
-                                </td>
-                                <td>
-                                    <p>Author</p>
-                                </td>
-                                <td>
-                                    <p>Score</p>
-                                </td>
-                            </tr>
+                        <tbody class="tbody" id="tablebody">
+
                         </tbody>
                     </table>
                 </div>

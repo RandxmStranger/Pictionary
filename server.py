@@ -242,8 +242,13 @@ def send_leader(): #This SQL queries the User table, and returns all of the user
 def handle_forum():
     return render_template("forum.html", username = session["username"])
 
+@socketio.on("requestforumpage")
+def send_forumpage():
+    posts = [[["Test Post Number 1"],["Lorem ipsum dolor si alamet forum body example text"],["User1"],["69"]]]
+    socketio.emit("sendforumpage", posts, room = request.sid)
+
 """need to add functionality to retrieve titles and links to all forum posts, handle making new posts, searching for posts, deleting, making admin functionality,
-voting on posts, adding comments, editing posts, """
+voting on posts, adding comments, editing posts etc. """
 
 
 if __name__ == "__main__":
