@@ -244,7 +244,7 @@ def handle_forum():
 
 @socketio.on("requestforumpage")
 def send_forumpage():
-    posts = [[["Test Post Number 1"],["Lorem ipsum dolor si alamet forum body example text"],["User1"],["69"]]]
+    posts = [[["Test Post Number 1"],["Lorem ipsum dolor si alamet forum body example text"],["User1"],["69"]],[["Test Post Number 2"],["example text doesnt matter"],["password"],["420"]]]
     socketio.emit("sendforumpage", posts, room = request.sid)
 
 """need to add functionality to retrieve titles and links to all forum posts, handle making new posts, searching for posts, deleting, making admin functionality,
