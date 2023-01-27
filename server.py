@@ -242,13 +242,48 @@ def send_leader(): #This SQL queries the User table, and returns all of the user
 def handle_forum():
     return render_template("forum.html", username = session["username"])
 
+@app.route("/newpost", methods=("GET", "POST"))
+@login_required
+def newpost():
+    if request.method == "POST":
+        title = request.form["title_input"]
+        content = request.form["content_input"]
+        if not title:
+            flash("Please Include A Title")
+        elif not content:
+            flash("Please Include Content To Your Post")
+        else:
+            db.engine.execute("INSERT INTO post (post_title, post_content, post_author) VALUES (:post_title, :post_content, :post_author)", post_title = title, post_content = content, post_author = session['id'])
+            return redirect("/forum")
+    return render_template("newpost.html")
+
 @socketio.on("requestforumpage")
 def send_forumpage():
-    posts = [[["Test Post Number 1"],["Lorem ipsum dolor si alamet forum body example text"],["User1"],["69"]],[["Test Post Number 2"],["example text doesnt matter"],["password"],["420"]]]
+    poststuple = db.engine.execute("""
+    SELECT post.post_title, post.post_content, post.post_author
+    FROM post
+    ORDER BY post.post_id DESC""")
+    posts = []
+    for i in poststuple:
+        posts.append(list(i))
+    print(posts)
+    for i in posts:
+        print(i[2])
+        name = db.engine.execute("""
+        SELECT user.username
+        FROM user
+        WHERE user.id = {}
+        """.format(i[2]))
+        for row in name:
+            print(row)
+            newrow = [row[0]]
+            print(newrow)
+            i[2] =newrow[0]
+    print(posts)
     socketio.emit("sendforumpage", posts, room = request.sid)
 
-"""need to add functionality to retrieve titles and links to all forum posts, handle making new posts, searching for posts, deleting, making admin functionality,
-voting on posts, adding comments, editing posts etc. """
+"""need to add functionality to retrievelinks to all forum posts, deleting, making admin functionality,
+adding comments, editing posts etc. """
 
 
 if __name__ == "__main__":
