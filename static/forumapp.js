@@ -5,7 +5,7 @@ function requestforum(){
 }
 
 function new_post(){
-    null
+    location.href = "/newpost"
 }
 function game(){ //This function takes the user to the forum route when they press the forum button on the page
     location.href = "/"

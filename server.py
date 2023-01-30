@@ -268,18 +268,14 @@ def send_forumpage():
         posts.append(list(i))
     print(posts)
     for i in posts:
-        print(i[2])
         name = db.engine.execute("""
         SELECT user.username
         FROM user
         WHERE user.id = {}
         """.format(i[2]))
         for row in name:
-            print(row)
             newrow = [row[0]]
-            print(newrow)
             i[2] =newrow[0]
-    print(posts)
     socketio.emit("sendforumpage", posts, room = request.sid)
 
 """need to add functionality to retrievelinks to all forum posts, deleting, making admin functionality,
