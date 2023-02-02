@@ -260,25 +260,17 @@ def newpost():
 @socketio.on("requestforumpage")
 def send_forumpage():
     poststuple = db.engine.execute("""
-    SELECT post.post_title, post.post_content, post.post_author
-    FROM post
+    SELECT post.post_title, post.post_author, user.username
+    FROM post, user
+    WHERE user.id = post.post_author
     ORDER BY post.post_id DESC""")
     posts = []
     for i in poststuple:
         posts.append(list(i))
     print(posts)
-    for i in posts:
-        name = db.engine.execute("""
-        SELECT user.username
-        FROM user
-        WHERE user.id = {}
-        """.format(i[2]))
-        for row in name:
-            newrow = [row[0]]
-            i[2] =newrow[0]
     socketio.emit("sendforumpage", posts, room = request.sid)
 
-"""need to add functionality to retrievelinks to all forum posts, deleting, making admin functionality,
+"""need to add functionality to retrieve links to all forum posts, deleting, making admin functionality,
 adding comments, editing posts etc. """
 
 
