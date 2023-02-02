@@ -30,10 +30,8 @@ socket.on('sendforumpage', function(posts) {
         let title = document.createElement("a");
         title.href ="#";
         let author = document.createElement("p");
-        let score = document.createElement("p");
         title.innerText = posts[i][0];
         author.innerText = posts[i][2];
-        score.innerText = posts[i][3];
         titleheading = document.createElement("h3");
         titleheading.classList.add("display-6");
         titleheading.appendChild(title);
@@ -41,12 +39,9 @@ socket.on('sendforumpage', function(posts) {
         titlecell.appendChild(titleheading);
         let authorcell = document.createElement("td");
         authorcell.appendChild(author);
-        let scorecell = document.createElement("td");
-        scorecell.appendChild(score);
         let tablerow = document.createElement("tr");
         tablerow.appendChild(titlecell);
         tablerow.appendChild(authorcell);
-        tablerow.appendChild(scorecell);
         table.appendChild(tablerow);
     };
 });
