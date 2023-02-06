@@ -488,10 +488,12 @@ def send_leader():  # This SQL queries the User table, and returns all of the us
         "sendleader", score, room=request.sid
     )  # This emits the score array to the user who requested it.
 
+
 @app.route("/forum")
 @login_required
 def handle_forum():
     return render_template("forum.html", username=session["username"])
+
 
 @app.route("/newpost", methods=("GET", "POST"))
 @login_required
@@ -513,11 +515,12 @@ def newpost():
             return redirect("/forum")
     return render_template("newpost.html")
 
+
 @socketio.on("requestforumpage")
 def send_forumpage():
     poststuple = db.engine.execute(
         """
-    SELECT post.post_title, post.post_author, user.username
+    SELECT post.post_title, post.post_author, user.username, post.post_id
     FROM post, user
     WHERE user.id = post.post_author
     ORDER BY post.post_id DESC"""
@@ -527,8 +530,43 @@ def send_forumpage():
         posts.append(list(i))
     socketio.emit("sendforumpage", posts, room=request.sid)
 
-"""need to add functionality to retrieve links to all forum posts, deleting, making admin functionality,
+
+"""need to add functionality for deleting, making admin functionality,
 adding comments, editing posts etc. """
+
+
+@app.route("/post/<id>")
+@login_required
+def viewpost(id):
+    post = db.engine.execute(
+        """
+        SELECT post.post_title, post.post_content
+        FROM post
+        WHERE :post_id = post.post_id
+        """,
+        post_id=id,
+    )
+    post = list(post)
+    return render_template(
+        "post.html", title=post[0][0], content=post[0][1]
+    )
+
+@socketio.on("requestcomments", id)
+def sendcomments(id):
+    commentstuple = db.engine.execute(
+            """
+            SELECT comment.comment_content, user.username
+            FROM comment, user
+            WHERE user.id = comment.comment_author AND comment.comment_post = :post_id
+            ORDER BY comment.comment_id DESC
+            """,
+            post_id=id,
+        )
+    commentslist = []
+    for i in commentstuple:
+        commentslist.append(list(i))
+    socketio.emit("sendcomments", commentslist, room=request.sid)
+
 
 if __name__ == "__main__":
     socketio.run(

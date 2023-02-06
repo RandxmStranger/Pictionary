@@ -28,7 +28,7 @@ socket.on('sendforumpage', function(posts) {
 
     for(let i=0; i < posts.length; i++) {
         let title = document.createElement("a");
-        title.href ="#";
+        title.href = "/post/" + posts[i][3];
         let author = document.createElement("p");
         title.innerText = posts[i][0];
         author.innerText = posts[i][2];
