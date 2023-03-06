@@ -27,6 +27,14 @@
                 <div class="col-8 col-xl-9">
                     <h2 class="rounded-top p-4 mb-0" style="background-color: #999;">{{ title }}</h2>
                     <p class="rounded-bottom p-4" style="background-color: #ddd;">{{ content }}</p>
+                    <form method="post">
+                        <div class="row mb-2" style="margin: auto;">
+                            <input class="form-control" type="text" placeholder="Add your Comment" name="comment_input" id="comment_input" value="{{ request.form['comment_input'] }}">
+                        </div>
+                        <div class="row my-2" style="margin: auto; justify-content: center;">
+                            <button style="width: 33%" class="btn btn-primary" style="background-color: #3354AA;" type="submit">Submit</button>
+                        </div>
+                    </form>
                     <table class="table table-responsive" id="commentstable">
                         <thead class="thead">
                             <tr>

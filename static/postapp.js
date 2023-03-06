@@ -16,8 +16,9 @@ function logout(){ //This function takes the user to the forum route when they p
 }
 
 function requestcomments(){
-    console.log(window.location.href.slice[-1])
-    socket.emit("requestcomments", window.location.href[-1])
+    let postno = (window.location.href.charAt(window.location.href.length -1))
+    console.log(postno)
+    socket.emit("requestcomm", postno)
 }
 
 socket.on("sendcomments", function(commentslist) { 
@@ -26,8 +27,8 @@ socket.on("sendcomments", function(commentslist) {
     for(let i=0; i < commentslist.length; i++) {
         let comment = document.createElement("p");
         let author = document.createElement("p");
-        comment.innerText = posts[i][0];
-        author.innerText = posts[i][1];
+        comment.innerText = commentslist[i][0];
+        author.innerText = commentslist[i][1];
         let commentcell = document.createElement("td");
         commentcell.appendChild(comment);
         let authorcell = document.createElement("td");

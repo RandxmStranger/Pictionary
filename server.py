@@ -535,24 +535,38 @@ def send_forumpage():
 adding comments, editing posts etc. """
 
 
-@app.route("/post/<id>")
+@app.route("/post/<id>", methods=("GET", "POST"))
 @login_required
 def viewpost(id):
-    post = db.engine.execute(
-        """
-        SELECT post.post_title, post.post_content
-        FROM post
-        WHERE :post_id = post.post_id
-        """,
-        post_id=id,
-    )
-    post = list(post)
-    return render_template(
-        "post.html", title=post[0][0], content=post[0][1]
+    if request.method == "POST":
+        comment = request.form["comment_input"]
+        if not comment:
+            flash("Please Include A Title")
+        else:
+            db.engine.execute(
+                "INSERT INTO comment (comment_content, comment_post, comment_author) VALUES (:comment_content, :comment_post, :comment_author)",
+                comment_content=comment,
+                comment_post = id,
+                comment_author=session["id"],
+            )
+            return redirect("/post/" + str(id))
+    else:
+        post = db.engine.execute(
+            """
+            SELECT post.post_title, post.post_content
+            FROM post
+            WHERE :post_id = post.post_id
+            """,
+            post_id=id,
+        )
+        post = list(post)
+        return render_template(
+            "post.html", title=post[0][0], content=post[0][1]
     )
 
-@socketio.on("requestcomments", id)
+@socketio.on("requestcomm")
 def sendcomments(id):
+    print("comments requested")
     commentstuple = db.engine.execute(
             """
             SELECT comment.comment_content, user.username
