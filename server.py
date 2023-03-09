@@ -546,7 +546,7 @@ def viewpost(id):
             db.engine.execute(
                 "INSERT INTO comment (comment_content, comment_post, comment_author) VALUES (:comment_content, :comment_post, :comment_author)",
                 comment_content=comment,
-                comment_post = id,
+                comment_post=id,
                 comment_author=session["id"],
             )
             return redirect("/post/" + str(id))
@@ -560,22 +560,21 @@ def viewpost(id):
             post_id=id,
         )
         post = list(post)
-        return render_template(
-            "post.html", title=post[0][0], content=post[0][1]
-    )
+        return render_template("post.html", title=post[0][0], content=post[0][1])
+
 
 @socketio.on("requestcomm")
 def sendcomments(id):
     print("comments requested")
     commentstuple = db.engine.execute(
-            """
+        """
             SELECT comment.comment_content, user.username
             FROM comment, user
             WHERE user.id = comment.comment_author AND comment.comment_post = :post_id
             ORDER BY comment.comment_id DESC
             """,
-            post_id=id,
-        )
+        post_id=id,
+    )
     commentslist = []
     for i in commentstuple:
         commentslist.append(list(i))
